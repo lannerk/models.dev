@@ -1,0 +1,52 @@
+# Frey's weekly sync of this fork (T-0116, AD132 ⑤; skeleton in Frey's repository, ops/release/models.dev/).
+# Merges upstream's `dev` (anomalyco/models.dev) into a branch, checks what it would change in Frey's facts
+# table (frey/sync.sh: prices moved by more than 30 %, models removed, new ones; the schema) and opens a
+# pull request into `dev` with that report. A person reviews and merges; corrections go into
+# frey/overrides/, never into upstream's files. Only this workflow is enabled in the fork.
+name: frey-sync
+
+on:
+  schedule:
+    - cron: "23 18 * * 0" # Monday 02:23 Asia/Shanghai
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: frey-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: The schema checker
+        run: python3 -m pip install --user --disable-pip-version-check jsonschema==4.26.0
+      - name: Tests
+        run: python3 frey/test_facts_report.py
+      - name: Merge upstream and report
+        id: sync
+        run: |
+          git remote add upstream https://github.com/anomalyco/models.dev.git
+          branch="frey-sync/$(date -u +%Y-%m-%d)"
+          git switch -c "$branch"
+          bash frey/sync.sh "$RUNNER_TEMP/sync"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "changed=$(cat "$RUNNER_TEMP/sync/changed")" >> "$GITHUB_OUTPUT"
+      - name: Pull request
+        if: steps.sync.outputs.changed == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.sync.outputs.branch }}
+        run: |
+          git push -q origin "HEAD:refs/heads/$BRANCH"
+          gh pr create --base dev --head "$BRANCH" \
+            --title "Sync upstream models.dev ($(date -u +%Y-%m-%d))" \
+            --body-file "$RUNNER_TEMP/sync/report.md"

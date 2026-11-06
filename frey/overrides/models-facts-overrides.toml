@@ -1,0 +1,4 @@
+# Corrections the facts table (configs/models-facts.json) takes over models.dev's data (T-0112), applied by
+# tools/models_facts.py after the merge. One [[override]] per correction: vendor (a preset name), model (its id),
+# set (the fields to replace, in the facts table's own shape), why (and where that was seen). None so far.
+version = 1

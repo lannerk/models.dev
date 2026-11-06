@@ -1,0 +1,333 @@
+# Model vendor presets (AD94, AD95; T-0043). `provider.vendor = "<name>"` fills `provider.type`,
+# `base_url`, `openai_compat.endpoint` / `responses.endpoint`, `api_key_env` and
+# `openai_compat.supports_reasoning` with these
+# values under whatever the configuration writes itself. Model names are never preset (AD94).
+#
+# Every entry: the vendor's own documentation it was taken from (with the day it was read), and
+# `verified` — "run": a real read_file → edit_file → run_shell round trip with frey; "docs": the
+# documentation only, never run. Read by `frey-vendors` (compiled in) and by its tests, which refuse an
+# entry with a field missing.
+#
+# `models_dev` (T-0112): the models.dev provider id whose models the facts table (configs/models-facts.json,
+# tools/models_facts.py) takes for this preset; none: the preset has no facts (Ollama is local).
+# Fields: name, display, type (the protocol used when `provider.type` is not written), openai_base_url +
+# openai_endpoint and/or messages_base_url (the client appends `/v1/messages`) and/or responses_base_url +
+# responses_endpoint (OpenAI's Responses API, T-0059; `provider.type = "responses"`) and/or gemini_base_url
+# (Google's Gemini API, version included, T-0060; `provider.type = "gemini"`), api_key_env (the
+# vendor's documented name where it gives one), supports_reasoning, hosts (more hosts for detection;
+# a leading "." matches any subdomain), sources, verified, checked, note.
+#
+# Not in the table (2026-10-25): ByteDance Volcengine Ark (Doubao), Baidu Qianfan (ERNIE) and Tencent
+# Hunyuan — their documentation pages are rendered by script and could not be read that day
+# (docs.volcengine.com, cloud.baidu.com/doc/qianfan-api, cloud.tencent.com/document/product/1729 came
+# back empty), so nothing about them is confirmed; `provider.vendor = "other"` with their address still
+# works.
+
+# —— Run with frey ——
+
+[[vendor]]
+name = "deepseek"
+display = "DeepSeek"
+type = "openai_compat"
+openai_base_url = "https://api.deepseek.com"
+openai_endpoint = "/chat/completions"
+messages_base_url = "https://api.deepseek.com/anthropic"
+responses_base_url = "https://api.deepseek.com"
+responses_endpoint = "/v1/responses"
+api_key_env = "DEEPSEEK_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://api-docs.deepseek.com/ (2026-10-25: base_url https://api.deepseek.com and https://api.deepseek.com/anthropic, ${DEEPSEEK_API_KEY})",
+    "https://api-docs.deepseek.com/guides/tool_calls (2026-10-25: strict mode needs base_url https://api.deepseek.com/beta)",
+    "https://api-docs.deepseek.com/guides/chat_prefix_completion (2026-10-25: prefix completion needs the beta base_url)",
+    "https://api-docs.deepseek.com/guides/responses_api (2026-10-27: base_url https://api.deepseek.com; stateless, store / previous_response_id / include unsupported and silently ignored; a reasoning item's plain content is merged into the adjacent assistant message; no data: [DONE])",
+]
+models_dev = "deepseek"
+verified = "run"
+checked = "2026-10-27"
+note = "OpenAI-compatible by default: DeepSeek's own protocol, and the reasoning goes back as reasoning_content (AD93; its Anthropic-compatible endpoint ignores cache_control). Not the /beta address: what it adds is strict function calling (every property required, additionalProperties false, `strict: true` on each function — frey's tool schemas have optional properties and frey sends no `strict`) and chat prefix completion, neither of which frey uses; the same tool round trip works on both (T-0043 ⑫). Its Responses API (POST /v1/responses, also /responses) is there to choose with provider.type = \"responses\": a read_file → edit_file → run_shell round trip with frey, 2026-10-27 (T-0059)."
+
+[[vendor]]
+name = "openrouter"
+display = "OpenRouter"
+type = "openai_compat"
+openai_base_url = "https://openrouter.ai/api"
+openai_endpoint = "/v1/chat/completions"
+responses_base_url = "https://openrouter.ai/api"
+responses_endpoint = "/v1/responses"
+api_key_env = "OPENROUTER_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://openrouter.ai/docs/api/reference/streaming (2026-10-25: comment lines, in-stream errors, usage chunk)",
+    "https://openrouter.ai/docs/api/reference/errors-and-debugging (2026-10-25)",
+    "https://openrouter.ai/docs/api_reference/responses/overview.md (2026-10-27: https://openrouter.ai/api/v1/responses; stateless, store: true or previous_response_id is a 400)",
+]
+models_dev = "openrouter"
+verified = "run"
+checked = "2026-10-27"
+note = "A normal API key, not a management key (that one gets 401 \"User not found.\"). Free models end in `:free`; some answer 403 to apps outside OpenRouter's list (frey sends no HTTP-Referer / X-OpenRouter-Title). Section 10 sample, T-0042. Its Responses API (provider.type = \"responses\") ran with frey on cohere/north-mini-code:free, 2026-10-27 (T-0059); the stream ends with data: [DONE]."
+
+[[vendor]]
+name = "ollama"
+display = "Ollama"
+type = "openai_compat"
+openai_base_url = "http://localhost:11434"
+openai_endpoint = "/v1/chat/completions"
+messages_base_url = "http://localhost:11434"
+api_key_env = "OLLAMA_API_KEY"
+key_required = false
+supports_reasoning = true
+hosts = ["127.0.0.1:11434"]
+sources = [
+    "https://docs.ollama.com/api/anthropic-compatibility (2026-10-25: /v1/messages on http://localhost:11434, no key checked locally, tool_choice unsupported)",
+]
+verified = "run"
+checked = "2026-10-25"
+note = "The local server needs no key (frey sends no Authorization when the variable is unset). OpenAI-compatible by default: run with Ollama 0.40.10 + qwen3:1.7b (T-0039); its Messages endpoint does not support tool_choice (AD53 sends `none`). Set provider.context_window to Ollama's context length: a longer prompt is cut silently, not refused (section 10)."
+
+# —— Documentation only ——
+
+[[vendor]]
+name = "anthropic"
+display = "Anthropic"
+type = "messages_api"
+messages_base_url = "https://api.anthropic.com"
+api_key_env = "ANTHROPIC_API_KEY"
+sources = [
+    "https://platform.claude.com/docs/en/api/overview (2026-10-25: https://api.anthropic.com, x-api-key still supported, anthropic-version required, GET /v1/models)",
+    "https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python (2026-10-25: the SDK reads ANTHROPIC_API_KEY)",
+]
+models_dev = "anthropic"
+verified = "docs"
+checked = "2026-10-25"
+note = "The overview page also says an API key that is not scoped to a workspace needs an `anthropic-workspace-id` header, which frey does not send."
+
+[[vendor]]
+name = "openai"
+display = "OpenAI"
+type = "responses"
+openai_base_url = "https://api.openai.com"
+openai_endpoint = "/v1/chat/completions"
+responses_base_url = "https://api.openai.com"
+responses_endpoint = "/v1/responses"
+api_key_env = "OPENAI_API_KEY"
+sources = [
+    "https://developers.openai.com/api/reference/python/resources/responses/methods/create (2026-10-27: POST /responses, \"Create a model response\"; store \"Defaults to true when omitted\")",
+    "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create (2026-10-25: POST https://api.openai.com/v1/chat/completions, Bearer $OPENAI_API_KEY; streamed deltas carry no reasoning text)",
+]
+models_dev = "openai"
+verified = "docs"
+checked = "2026-10-27"
+note = "The Responses API by default (AD100 ①, T-0059): OpenAI's own protocol, the one its reasoning models carry their reasoning in (as reasoning items, sent back with the tool outputs). provider.type = \"openai_compat\" goes back to chat completions. No OpenAI key to run either with: the Responses client ran against DeepSeek's and OpenRouter's Responses endpoints instead."
+
+[[vendor]]
+name = "gemini"
+display = "Google Gemini"
+type = "gemini"
+gemini_base_url = "https://generativelanguage.googleapis.com/v1beta"
+openai_base_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+openai_endpoint = "/chat/completions"
+api_key_env = "GEMINI_API_KEY"
+sources = [
+    "https://ai.google.dev/api (2026-10-27: every request carries the x-goog-api-key header; base https://generativelanguage.googleapis.com/v1beta)",
+    "https://ai.google.dev/api/generate-content (2026-10-27: POST v1beta/{model=models/*}:streamGenerateContent, a stream of GenerateContentResponse; the examples use alt=sse)",
+    "https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta (2026-10-27, revision 20261026: Part.thoughtSignature, FunctionDeclaration.parametersJsonSchema, FunctionResponse.response, FinishReason, UsageMetadata, models.list GET v1beta/models)",
+    "https://ai.google.dev/gemini-api/docs/generate-content/thought-signatures (2026-10-27, updated 2026-10-13: Gemini 3 and 4 must get the signatures back during function calling, else a 400)",
+    "https://ai.google.dev/gemini-api/docs/openai (2026-10-25: base_url .../v1beta/openai/, Bearer $GEMINI_API_KEY, models at .../v1beta/openai/models)",
+]
+models_dev = "google"
+verified = "run"
+checked = "2026-10-27"
+note = "Gemini's own API by default (AD100 ①, T-0060): it carries the thought signatures (the model's parts go back as they came) and thinkingConfig, which its OpenAI-compatible endpoint does not; provider.type = \"openai_compat\" goes back to that endpoint. Run with the requester's test key (2026-10-27): a read_file → edit_file → run_shell round trip with frey on gemini-3.5-flash; a call sent back without its thought signature is a 400 (recorded). Free tier: a used-up daily quota is a 429 whose RetryInfo says hours, which frey does not wait for."
+
+[[vendor]]
+name = "xai"
+display = "xAI"
+type = "openai_compat"
+openai_base_url = "https://api.x.ai"
+openai_endpoint = "/v1/chat/completions"
+api_key_env = "XAI_API_KEY"
+sources = [
+    "https://docs.x.ai/docs/api-reference (2026-10-25: base_url https://api.x.ai/v1, XAI_API_KEY)",
+    "https://docs.x.ai/developers/model-capabilities/legacy/chat-completions (2026-10-25: https://api.x.ai/v1/chat/completions, \"offered as a legacy endpoint\")",
+]
+models_dev = "xai"
+verified = "docs"
+checked = "2026-10-25"
+note = "xAI calls chat completions legacy (new features go to its Responses API first)."
+
+[[vendor]]
+name = "mistral"
+display = "Mistral"
+type = "openai_compat"
+openai_base_url = "https://api.mistral.ai"
+openai_endpoint = "/v1/chat/completions"
+api_key_env = "MISTRAL_API_KEY"
+sources = [
+    "https://docs.mistral.ai/api/ (2026-10-25: POST https://api.mistral.ai/v1/chat/completions, Bearer $MISTRAL_API_KEY)",
+]
+models_dev = "mistral"
+verified = "docs"
+checked = "2026-10-25"
+note = "The page names no streamed reasoning field; how its reasoning models stream is unverified."
+
+[[vendor]]
+name = "qwen"
+display = "Qwen (Alibaba Cloud Model Studio)"
+type = "openai_compat"
+openai_base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "DASHSCOPE_API_KEY"
+supports_reasoning = true
+hosts = [".maas.aliyuncs.com"]
+sources = [
+    "https://help.aliyun.com/zh/model-studio/compatibility-of-openai-with-dashscope (2026-10-25: workspace domains https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1 recommended, the shared https://dashscope.aliyuncs.com still works, DASHSCOPE_API_KEY, keys bound to a region)",
+    "https://help.aliyun.com/zh/model-studio/anthropic-api-messages (2026-10-25: Anthropic-compatible only on the workspace domains, .../apps/anthropic)",
+    "https://help.aliyun.com/zh/model-studio/deep-thinking (2026-10-25: thinking in delta.reasoning_content; read back only with preserve_thinking)",
+]
+models_dev = "alibaba-cn"
+verified = "docs"
+checked = "2026-10-25"
+note = "Beijing region on the shared domain. A workspace address (…maas.aliyuncs.com) is recognised by host; with /apps/anthropic in its path it is the Messages API (write it as provider.base_url)."
+
+[[vendor]]
+name = "qwen-intl"
+display = "Qwen (Alibaba Cloud, Singapore)"
+type = "openai_compat"
+openai_base_url = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "DASHSCOPE_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://help.aliyun.com/zh/model-studio/compatibility-of-openai-with-dashscope (2026-10-25: https://dashscope-intl.aliyuncs.com (Singapore) still works)",
+]
+models_dev = "alibaba"
+verified = "docs"
+checked = "2026-10-25"
+
+[[vendor]]
+name = "moonshot"
+display = "Kimi (Moonshot AI)"
+type = "openai_compat"
+openai_base_url = "https://api.moonshot.cn/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "MOONSHOT_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://platform.kimi.com/docs/api/chat (2026-10-25: https://api.moonshot.cn/v1, MOONSHOT_API_KEY; thinking models stream reasoning_content and want it back with the tool calls)",
+    "https://platform.kimi.com/docs/api/messages (2026-10-25: Anthropic-compatible https://api.moonshot.cn/anthropic with a Bearer token)",
+]
+models_dev = "moonshotai-cn"
+verified = "docs"
+checked = "2026-10-25"
+note = "Its Anthropic-compatible endpoint takes the key as a Bearer token; frey's Messages API client sends x-api-key, so only the OpenAI-compatible endpoint is preset."
+
+[[vendor]]
+name = "moonshot-intl"
+display = "Kimi (Moonshot AI, international)"
+type = "openai_compat"
+openai_base_url = "https://api.moonshot.ai/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "MOONSHOT_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://platform.kimi.ai/docs/api/messages.md (2026-10-25: production server https://api.moonshot.ai, Messages at https://api.moonshot.ai/anthropic)",
+]
+models_dev = "moonshotai"
+verified = "docs"
+checked = "2026-10-25"
+note = "The international page lists https://api.moonshot.ai as the server but documents only the Messages endpoint; /v1/chat/completions there is taken from the China platform's layout, unverified."
+
+[[vendor]]
+name = "zhipu"
+display = "GLM (Zhipu AI)"
+type = "openai_compat"
+openai_base_url = "https://open.bigmodel.cn/api/paas/v4"
+openai_endpoint = "/chat/completions"
+messages_base_url = "https://open.bigmodel.cn/api/anthropic"
+api_key_env = "ZAI_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://docs.bigmodel.cn/cn/guide/develop/openai/introduction (2026-10-25: base_url https://open.bigmodel.cn/api/paas/v4/, ZAI_API_KEY, delta.reasoning_content with thinking enabled)",
+    "https://docs.bigmodel.cn/cn/guide/develop/claude/introduction (2026-10-25: Anthropic-compatible https://open.bigmodel.cn/api/anthropic)",
+]
+models_dev = "zhipuai"
+verified = "docs"
+checked = "2026-10-25"
+
+[[vendor]]
+name = "zhipu-intl"
+display = "GLM (Z.ai)"
+type = "openai_compat"
+openai_base_url = "https://api.z.ai/api/paas/v4"
+openai_endpoint = "/chat/completions"
+api_key_env = "ZAI_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://docs.z.ai/api-reference/introduction.md (2026-10-25: https://api.z.ai/api/paas/v4/chat/completions, Bearer)",
+]
+models_dev = "zai"
+verified = "docs"
+checked = "2026-10-25"
+
+[[vendor]]
+name = "minimax"
+display = "MiniMax"
+type = "messages_api"
+openai_base_url = "https://api.minimax.cn/v1"
+openai_endpoint = "/chat/completions"
+messages_base_url = "https://api.minimax.cn/anthropic"
+api_key_env = "MINIMAX_API_KEY"
+hosts = ["api.minimaxi.com"]
+sources = [
+    "https://platform.minimax.cn/docs/api-reference/text-openai-api (2026-10-25: OPENAI_BASE_URL=https://api.minimax.cn/v1; MiniMax-M3 / M2.x put thinking in <think> tags in content unless reasoning_split)",
+    "https://platform.minimax.cn/docs/api-reference/text-anthropic-api (2026-10-25: ANTHROPIC_BASE_URL=https://api.minimax.cn/anthropic)",
+]
+models_dev = "minimax-cn"
+verified = "docs"
+checked = "2026-10-25"
+note = "Messages API by default: on the OpenAI-compatible endpoint most of its models write the thinking into the text as <think> tags (frey would show them as text). Its docs use the generic OPENAI_API_KEY / ANTHROPIC_API_KEY names; MINIMAX_API_KEY is frey's suggestion. platform.minimaxi.com now redirects to platform.minimax.cn."
+
+[[vendor]]
+name = "minimax-intl"
+display = "MiniMax (international)"
+type = "messages_api"
+messages_base_url = "https://api.minimax.io/anthropic"
+api_key_env = "MINIMAX_API_KEY"
+sources = [
+    "https://platform.minimax.io/docs/api-reference/text-anthropic-api (2026-10-25: ANTHROPIC_BASE_URL=https://api.minimax.io/anthropic)",
+]
+models_dev = "minimax"
+verified = "docs"
+checked = "2026-10-25"
+
+[[vendor]]
+name = "siliconflow"
+display = "SiliconFlow"
+type = "openai_compat"
+openai_base_url = "https://api.siliconflow.cn/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "SILICONFLOW_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://docs.siliconflow.cn/cn/api-reference/chat-completions/chat-completions (2026-10-25: POST https://api.siliconflow.cn/v1/chat/completions, Bearer, reasoning_content in the response)",
+]
+models_dev = "siliconflow-cn"
+verified = "docs"
+checked = "2026-10-25"
+note = "The page names no key variable; SILICONFLOW_API_KEY is frey's suggestion."
+
+[[vendor]]
+name = "siliconflow-intl"
+display = "SiliconFlow (international)"
+type = "openai_compat"
+openai_base_url = "https://api.siliconflow.com/v1"
+openai_endpoint = "/chat/completions"
+api_key_env = "SILICONFLOW_API_KEY"
+supports_reasoning = true
+sources = [
+    "https://docs.siliconflow.com/en/api-reference/chat-completions/chat-completions (2026-10-25: server https://api.siliconflow.com/v1, /chat/completions, Bearer)",
+]
+models_dev = "siliconflow"
+verified = "docs"
+checked = "2026-10-25"
