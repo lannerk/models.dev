@@ -331,3 +331,99 @@ sources = [
 models_dev = "siliconflow"
 verified = "docs"
 checked = "2026-10-25"
+
+# —— Decision models (T-0122, AD137, AD117 ④) ——
+#
+# Services that answer a decision model's questions (System One: `model` + `state` + named questions —
+# noul / choice / score — in, one answer per question with probabilities out). They are not conversation
+# models: never in `/model`, `models.list` or the router's candidates; `decision.model = "<name>"` or
+# `"<name>/<model>"` picks one. Fields: name, display, url (the whole endpoint), model (the default),
+# api_key_env, codec ("system_one": the body as it is; "cloudflare_run": Workers AI's `{model, input}`
+# with the answer inside its `result`), sources, verified ("docs" for all six: none was answered with a
+# paid key here), checked, note. An address with `{…}` in it needs the user's part: `decision.base_url`.
+
+[[decision]]
+name = "typesafe"
+display = "TypeSafe"
+url = "https://api.typesafe.ai/v1/systemone"
+model = "jev-latest"
+api_key_env = "TYPESAFE_API_KEY"
+codec = "system_one"
+sources = [
+    "https://docs.typesafe.ai/api (2026-11-06: POST https://api.typesafe.ai/v1/systemone, Authorization: Bearer; model + state + questions → answers; noul / choice / score / box; 400 or 422 with detail; usage input_tokens / output_tokens)",
+    "Pi github.com/earendil-works/pi e6b77d0 packages/ai/catalog/providers/typesafe.ts and src/env-api-keys.ts (2026-11-06: jev-latest, TYPESAFE_API_KEY)",
+]
+verified = "docs"
+checked = "2026-11-06"
+
+[[decision]]
+name = "openrouter"
+display = "OpenRouter"
+url = "https://openrouter.ai/api/v1/systemone"
+model = "typesafe/jev-1.13"
+api_key_env = "OPENROUTER_API_KEY"
+codec = "system_one"
+sources = [
+    "https://openrouter.ai/blog/tutorials/how-to-use-jev/ (2026-11-06: typesafe/jev-1.13, any OpenRouter key, billed to the account; its example posts to /api/alpha/decisions)",
+    "Pi e6b77d0 packages/ai/src/providers/openrouter.ts:85 (2026-11-06: System One at /api/v1/systemone)",
+]
+verified = "docs"
+checked = "2026-11-06"
+note = "Both /api/v1/systemone and /api/alpha/decisions answered 403 \"Key limit exceeded\" to frey's capped test key on 2026-11-06 — the addresses are there; no answer was seen. Jev is not a free model."
+
+[[decision]]
+name = "bailian"
+display = "Alibaba Cloud Model Studio (Bailian)"
+url = "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/systemone"
+model = "decision-model-preview"
+api_key_env = "DASHSCOPE_API_KEY"
+codec = "system_one"
+sources = [
+    "https://help.aliyun.com/zh/model-studio/decision-model-api (2026-11-06: https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/systemone and the ap-southeast-1 one, Bearer DASHSCOPE_API_KEY, decision-model-preview, choice / noul / score, at most 16 questions, 65,536 tokens)",
+    "https://help.aliyun.com/zh/model-studio/token-plan-decision-model (2026-11-06: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/systemone with the Token Plan key, sk-sp-…; personal edition only)",
+]
+verified = "docs"
+checked = "2026-11-06"
+note = "The preset is Token Plan's address (HiRoute's default too). A workspace's address is written as decision.base_url. Token Plan's page keeps its key in ANTHROPIC_AUTH_TOKEN; frey does not read another program's variable — the key goes in DASHSCOPE_API_KEY, or decision.api_key_env names another."
+
+[[decision]]
+name = "vercel"
+display = "Vercel AI Gateway"
+url = "https://ai-gateway.vercel.sh/typesafe/v1/systemone"
+model = "typesafe/jev-1.13"
+api_key_env = "AI_GATEWAY_API_KEY"
+codec = "system_one"
+sources = [
+    "Pi e6b77d0 packages/ai/src/providers/vercel-ai-gateway.ts:11-16 (2026-11-06: https://ai-gateway.vercel.sh, System One at /typesafe/v1/systemone) and src/env-api-keys.ts (AI_GATEWAY_API_KEY)",
+]
+verified = "docs"
+checked = "2026-11-06"
+note = "Pi takes the model's name from the gateway's own catalog; typesafe/jev-1.13 is OpenRouter's name for it and may differ there — write decision.model."
+
+[[decision]]
+name = "opencode"
+display = "OpenCode Zen"
+url = "https://opencode.ai/inference/systemone/v1/systemone"
+model = "jev-1.13"
+api_key_env = "OPENCODE_API_KEY"
+codec = "system_one"
+sources = [
+    "Pi e6b77d0 packages/ai/catalog/providers/opencode.ts:180-200 and src/providers/opencode.ts:25 (2026-11-06: https://opencode.ai/inference/systemone/v1, jev-1.13 and jev-1.13-free at no input price; OPENCODE_API_KEY)",
+]
+verified = "docs"
+checked = "2026-11-06"
+note = "jev-1.13-free is its free one (decision.model = \"opencode/jev-1.13-free\")."
+
+[[decision]]
+name = "cloudflare"
+display = "Cloudflare Workers AI"
+url = "https://api.cloudflare.com/client/v4/accounts/{account}/ai/run"
+model = "typesafe/jev"
+api_key_env = "CLOUDFLARE_API_KEY"
+codec = "cloudflare_run"
+sources = [
+    "Pi e6b77d0 packages/ai/src/api/cloudflare-workers-ai-system-one.ts (2026-11-06: POST /accounts/{account}/ai/run with {model, input}; the answer in result.result when state is Completed, or in result) citing https://developers.cloudflare.com/ai/models/typesafe/jev/",
+]
+verified = "docs"
+checked = "2026-11-06"
+note = "The address has the account in it: decision.base_url = \"https://api.cloudflare.com/client/v4/accounts/<account>/ai/run\"."
