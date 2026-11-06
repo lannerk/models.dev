@@ -46,7 +46,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ steps.sync.outputs.branch }}
         run: |
-          git push -q origin "HEAD:refs/heads/$BRANCH"
+          # The branch is the bot's own: a second run on the same day replaces it (and the open PR follows).
+          git push -q --force origin "HEAD:refs/heads/$BRANCH"
+          if gh pr view "$BRANCH" --repo "$GITHUB_REPOSITORY" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/sync/report.md"
+            exit 0
+          fi
           # --repo: in a fork gh would otherwise pick the parent (upstream) as the base repository.
           gh pr create --repo "$GITHUB_REPOSITORY" --base dev --head "$BRANCH" \
             --title "Sync upstream models.dev ($(date -u +%Y-%m-%d))" \
