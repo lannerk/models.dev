@@ -1,4 +1,22 @@
 # Corrections the facts table (configs/models-facts.json) takes over models.dev's data (T-0112), applied by
 # tools/models_facts.py after the merge. One [[override]] per correction: vendor (a preset name), model (its id),
-# set (the fields to replace, in the facts table's own shape), why (and where that was seen). None so far.
-version = 1
+# set (the fields to replace, in the facts table's own shape), why (and where that was seen).
+version = 2
+
+[[override]]
+vendor = "gemini"
+model = "gemini-2.5-flash"
+set = { status = "deprecated" }
+why = "Gemini API, 2026-11-06: HTTP 404 \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash\"; models.dev still lists it as active (T-0120)"
+
+[[override]]
+vendor = "gemini"
+model = "gemini-2.5-flash-lite"
+set = { status = "deprecated" }
+why = "Gemini API, 2026-11-06: HTTP 404 \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite\"; models.dev still lists it as active (T-0120)"
+
+[[override]]
+vendor = "gemini"
+model = "gemini-2.5-pro"
+set = { status = "deprecated" }
+why = "Gemini API, 2026-11-06: HTTP 404 \"This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview\"; models.dev still lists it as active (T-0120)"
