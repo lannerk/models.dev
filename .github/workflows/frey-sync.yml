@@ -47,6 +47,7 @@ jobs:
           BRANCH: ${{ steps.sync.outputs.branch }}
         run: |
           git push -q origin "HEAD:refs/heads/$BRANCH"
-          gh pr create --base dev --head "$BRANCH" \
+          # --repo: in a fork gh would otherwise pick the parent (upstream) as the base repository.
+          gh pr create --repo "$GITHUB_REPOSITORY" --base dev --head "$BRANCH" \
             --title "Sync upstream models.dev ($(date -u +%Y-%m-%d))" \
             --body-file "$RUNNER_TEMP/sync/report.md"
