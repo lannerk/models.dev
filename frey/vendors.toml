@@ -78,12 +78,57 @@ api_key_env = "OLLAMA_API_KEY"
 key_required = false
 supports_reasoning = true
 hosts = ["127.0.0.1:11434"]
+detect = { path = "/api/version", key = "version" }
 sources = [
     "https://docs.ollama.com/api/anthropic-compatibility (2026-10-25: /v1/messages on http://localhost:11434, no key checked locally, tool_choice unsupported)",
+    "https://docs.ollama.com/api/version (2026-11-11: GET /api/version answers {\"version\": …}; how T-0153 finds it on this computer)",
 ]
 verified = "run"
 checked = "2026-10-25"
 note = "The local server needs no key (frey sends no Authorization when the variable is unset). OpenAI-compatible by default: run with Ollama 0.40.10 + qwen3:1.7b (T-0039); its Messages endpoint does not support tool_choice (AD53 sends `none`). Set provider.context_window to Ollama's context length: a longer prompt is cut silently, not refused (section 10)."
+
+[[vendor]]
+name = "llamacpp"
+display = "llama.cpp"
+type = "openai_compat"
+openai_base_url = "http://localhost:9931"
+openai_endpoint = "/v1/chat/completions"
+messages_base_url = "http://localhost:9931"
+api_key_env = "LLAMA_API_KEY"
+key_required = false
+supports_reasoning = true
+hosts = ["127.0.0.1:9931"]
+detect = { path = "/props", key = "default_generation_settings", also = ["http://localhost:8080"] }
+sources = [
+    "https://github.com/ggml-org/llama.cpp/blob/b12182/tools/server/README.md (2026-11-11: llama-server listens on 127.0.0.1:9931 by default — 8080 in older builds and the Docker examples; POST /v1/chat/completions and the Anthropic-compatible POST /v1/messages, tool calls with --jinja (on by default); --api-key / LLAMA_API_KEY optional; reasoning in reasoning_content; GET /props has default_generation_settings; -c 0 takes the model's context)",
+]
+verified = "run"
+checked = "2026-11-11"
+note = "The local server needs no key unless it was started with --api-key (then put that key in LLAMA_API_KEY). Its default port is 9931 since 2026 (older builds and the Docker examples use 8080, which the detection also looks at). Set provider.context_window to the server's context (its -c, per slot when it runs several: -c divided by --parallel without --kv-unified): a longer prompt is refused, not cut. Run with llama-server b12182 + Qwen3-1.7B Q8_0 (T-0153)."
+
+[[vendor]]
+name = "lmstudio"
+display = "LM Studio"
+type = "openai_compat"
+openai_base_url = "http://localhost:1234"
+openai_endpoint = "/v1/chat/completions"
+messages_base_url = "http://localhost:1234"
+responses_base_url = "http://localhost:1234"
+responses_endpoint = "/v1/responses"
+api_key_env = "LM_API_TOKEN"
+key_required = false
+supports_reasoning = true
+hosts = ["127.0.0.1:1234"]
+detect = { path = "/api/v1/models", key = "models" }
+sources = [
+    "https://lmstudio.ai/docs/developer/core/headless_llmster (2026-11-11: lms server start, then http://localhost:1234/v1/models)",
+    "https://lmstudio.ai/docs/developer/rest/quickstart (2026-11-11: no authentication by default; Require Authentication sends Authorization: Bearer $LM_API_TOKEN)",
+    "https://lmstudio.ai/docs/developer/anthropic-compat (2026-11-11: the Anthropic-compatible base is http://localhost:1234; with authentication on, x-api-key or Bearer)",
+    "https://www.lmstudio.ai/docs/api/openai-api (2026-11-11: GET /v1/models, POST /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions)",
+]
+verified = "run"
+checked = "2026-11-11"
+note = "LM Studio's server (the desktop app's Developer tab, or the headless llmster: lms server start) needs no key unless Require Authentication is on (then LM_API_TOKEN). The model name is the identifier GET /v1/models lists; the context is the one the model was loaded with in LM Studio — set provider.context_window to it. Run with LM Studio's llmster + Qwen3-1.7B (T-0153)."
 
 # —— Documentation only ——
 

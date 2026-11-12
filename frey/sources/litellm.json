@@ -1,0 +1,3448 @@
+{
+ "commit": "52d1c4cd80162fbf03d7f92def0cb1631f1edfd4",
+ "license": "MIT; configs/sources/litellm.LICENSE",
+ "models": {
+  "chat-latest": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-fable-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-fable-5-1": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-fable-5-2": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512.0,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-haiku-4-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-haiku-4-5-20251001": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-haiku-5-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-mythos-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-mythos-5-1": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-mythos-5-2": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-mythos-preview": {
+   "deprecation_date": "2026-06-09",
+   "deprecation_source": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-5-20251101": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-6": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-6-20260205": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-7": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 2048,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-7-20260416": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 2048,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-4-8": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 1024,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-opus-5-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-sonnet-4-5": {
+   "deprecation_date": "2026-11-30",
+   "deprecation_source": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 1024,
+   "successor_model": "claude-sonnet-5-5",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-sonnet-4-5-20250929": {
+   "deprecation_date": "2026-11-30",
+   "deprecation_source": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 1024,
+   "successor_model": "claude-sonnet-5-5",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-sonnet-4-6": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 1024,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-sonnet-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 1024,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "claude-sonnet-5-5": {
+   "litellm_provider": "anthropic",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 512,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "computer-use-preview": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 1024,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "computer-use-preview-2025-03-11": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 1024,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/deepseek-v4-flash": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/deepseek-v4-flash-0731": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/deepseek-v4-pro": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/glm-5.1": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 202745,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/glm-5.2": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/kimi-k2.7-code": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 229376,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-coder": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-flash": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-flash-2025-07-28": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-max": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 30720,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-2025-01-25": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-2025-04-28": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-2025-07-14": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-2025-07-28": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-2025-09-11": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-plus-latest": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-turbo": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-turbo-2024-11-01": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-turbo-2025-04-28": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen-turbo-latest": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-30b-a3b": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 129024,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-coder-flash": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-coder-flash-2025-07-28": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-coder-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-coder-plus-2025-07-22": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 997952,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-max": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 258048,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-max-2026-01-23": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 258048,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-max-preview": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 258048,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-next-80b-a3b-instruct": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "dashscope/qwen3-next-80b-a3b-thinking": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-vl-235b-a22b-instruct": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "dashscope/qwen3-vl-235b-a22b-thinking": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-vl-32b-instruct": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "dashscope/qwen3-vl-32b-thinking": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3-vl-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 260096,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.5-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.7-max": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.7-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.8-flash": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.8-max": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwen3.8-omni-flash": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 991808,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "dashscope/qwq-plus": {
+   "litellm_provider": "dashscope",
+   "max_input_tokens": 98304,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "daybreak-blue-latest": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "daybreak-red-latest": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek-chat": {
+   "deprecation_date": "2026-07-24",
+   "deprecation_source": "https://api-docs.deepseek.com/updates",
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "deepseek-flash": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek-reasoner": {
+   "deprecation_date": "2026-07-24",
+   "deprecation_source": "https://api-docs.deepseek.com/updates",
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "deepseek-v4-flash": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek-v4-flash-vision-exp": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek-v4-pro": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-chat": {
+   "deprecation_date": "2026-07-24",
+   "deprecation_source": "https://api-docs.deepseek.com/updates",
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "deepseek/deepseek-coder": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "deepseek/deepseek-flash": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-r1": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 65536,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-reasoner": {
+   "deprecation_date": "2026-07-24",
+   "deprecation_source": "https://api-docs.deepseek.com/updates",
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-v3": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 65536,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "deepseek/deepseek-v3.2": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 163840,
+   "max_output_tokens": 163840,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-v4-flash": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-v4-flash-vision-exp": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "deepseek/deepseek-v4-pro": {
+   "litellm_provider": "deepseek",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 393216,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "ft:gpt-3.5-turbo": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra"
+  },
+  "ft:gpt-3.5-turbo-0125": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra"
+  },
+  "ft:gpt-3.5-turbo-0613": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 4096,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "ft:gpt-3.5-turbo"
+  },
+  "ft:gpt-3.5-turbo-1106": {
+   "deprecation_date": "2026-09-28",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra"
+  },
+  "ft:gpt-4-0613": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true
+  },
+  "ft:gpt-4.1-2025-04-14": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:gpt-4.1-mini-2025-04-14": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:gpt-4.1-nano-2025-04-14": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:gpt-4o-2024-08-06": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:gpt-4o-2024-11-20": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:gpt-4o-mini-2024-07-18": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "ft:o4-mini-2025-04-16": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "gemini-exp-1206": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65535,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini-flash-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini-flash-lite-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini-pro-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/deep-research-max-preview-04-2026": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/deep-research-preview-04-2026": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/deep-research-pro-preview-12-2025": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/deep-research-preview-04-2026",
+   "supports_function_calling": false
+  },
+  "gemini/gemini-2.5-computer-use-preview-10-2025": {
+   "deprecation_date": "2026-07-28",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 64000,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.8-flash",
+   "supports_function_calling": true
+  },
+  "gemini/gemini-2.5-flash": {
+   "deprecation_date": "2026-12-01",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.5-flash-lite",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-2.5-flash-lite": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-2.5-pro": {
+   "deprecation_date": "2026-12-01",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 2048,
+   "successor_model": "gemini/gemini-3.8-flash",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-2.5-pro-preview-tts": {
+   "deprecation_date": "2026-11-17",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.8-flash-tts",
+   "supports_function_calling": false
+  },
+  "gemini/gemini-3-flash-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.6-flash",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.1-flash-lite": {
+   "deprecation_date": "2027-05-07",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.5-flash-lite",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.1-flash-lite-preview": {
+   "deprecation_date": "2026-05-25",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-3.1-flash-lite",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.1-pro-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.1-pro-preview-customtools": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.5-flash": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "successor_model": "gemini/gemini-3.6-flash",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.5-flash-lite": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.6-flash": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.7-flash": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "successor_model": "gemini/gemini-3.8-flash",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-3.8-flash": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-4-argon": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096.0,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-4-carbon": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096.0,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-exp-1114": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/gemini-exp-1206": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 2097152,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/gemini-flash-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-flash-lite-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-gemma-2-27b-it": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/gemini-gemma-2-9b-it": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/gemini-omni-1.1-flash": {
+   "deprecation_date": "2026-12-03",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-omni-1.2-flash",
+   "supports_reasoning": true
+  },
+  "gemini/gemini-omni-1.2-flash": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_reasoning": true
+  },
+  "gemini/gemini-omni-flash-preview": {
+   "deprecation_date": "2026-10-22",
+   "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "successor_model": "gemini/gemini-omni-1.2-flash",
+   "supports_reasoning": true
+  },
+  "gemini/gemini-pro-latest": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096,
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-robotics-er-2-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-robotics-er-2-streaming-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemma-3-27b-it": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/gemma-4-26b-a4b-it": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemma-4-31b-it": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/learnlm-1.5-pro-experimental": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 32767,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "gemini/lyria-3-clip-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/lyria-3-pro-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "successor_model": "gemini/lyria-3.5",
+   "supports_function_calling": false
+  },
+  "gemini/lyria-3.5": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/lyria-3.5-clip-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/lyria-3.5-pro-preview": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gemini/lyria-realtime-exp": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 65536,
+   "mode": "chat",
+   "supports_function_calling": false
+  },
+  "gpt-3.5-turbo": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true
+  },
+  "gpt-3.5-turbo-0125": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-3.5-turbo-1106": {
+   "deprecation_date": "2026-09-28",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-3.5-turbo-16k": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 16385,
+   "max_output_tokens": 4096,
+   "mode": "chat"
+  },
+  "gpt-4": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true
+  },
+  "gpt-4-0613": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true
+  },
+  "gpt-4-1106-preview": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4-turbo": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4-turbo-2024-04-09": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1-2025-04-14": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1-mini": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1-mini-2025-04-14": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1-nano": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4.1-nano-2025-04-14": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 1047576,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-2024-05-13": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 4096,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-2024-08-06": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-2024-11-20": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-audio-preview-2024-12-17": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-audio-preview-2025-06-03": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-mini": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-mini-2024-07-18": {
+   "deprecation_date": "2027-01-14",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-mini-audio-preview-2024-12-17": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-mini-search-preview": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-mini-search-preview-2025-03-11": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-search-preview": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-4o-search-preview-2025-03-11": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-5": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-2025-08-07": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-chat": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.2-chat-latest",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "gpt-5-chat-latest": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-codex": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-mini": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-mini-2025-08-07": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-nano": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-nano-2025-08-07": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-pro": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 272000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-pro-2025-10-06": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 272000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5-search-api": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-5-search-api-2025-10-14": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true
+  },
+  "gpt-5.1": {
+   "deprecation_date": "2027-04-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.1-2025-11-13": {
+   "deprecation_date": "2027-04-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.1-chat-latest": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.1-codex": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.1-codex-max": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.1-codex-mini": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 400000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2-2025-12-11": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2-chat-latest": {
+   "deprecation_date": "2026-08-10",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2-codex": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2-pro": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.2-pro-2025-12-11": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.3-chat-latest": {
+   "deprecation_date": "2026-08-10",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.3-codex": {
+   "deprecation_date": "2027-04-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "successor_model": "gpt-6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-2026-03-05": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-mini": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-mini-2026-03-17": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-nano": {
+   "deprecation_date": "2027-04-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-nano-2026-03-17": {
+   "deprecation_date": "2027-04-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "successor_model": "gpt-6-luna",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-pro": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.4-pro-2026-03-05": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.5": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.5-2026-04-23": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.5-cyber": {
+   "litellm_provider": "openai",
+   "mode": "chat",
+   "supports_reasoning": true
+  },
+  "gpt-5.5-cyber-preview": {
+   "deprecation_date": "2027-02-01",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "mode": "chat",
+   "supports_reasoning": true
+  },
+  "gpt-5.5-pro": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.5-pro-2026-04-23": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 1050000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.6": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.6-cyber": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.6-luna": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.6-sol": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-5.6-terra": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-astra": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-astra-law": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-cyber": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-luna": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-rosalind": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6-sol": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6.1-sol": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-6.1-terra": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-audio": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-audio-1.5": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-audio-2025-08-28": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-audio-mini": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-audio-mini-2025-10-06": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-audio-mini-2025-12-15": {
+   "deprecation_date": "2027-01-20",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 16384,
+   "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": false
+  },
+  "gpt-daybreak-blue-latest": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 922000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-daybreak-red-latest": {
+   "litellm_provider": "openai",
+   "max_input_tokens": 272000,
+   "max_output_tokens": 128000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gpt-rosalind-discovery": {
+   "litellm_provider": "openai",
+   "mode": "chat"
+  },
+  "gpt-rosalind-research": {
+   "litellm_provider": "openai",
+   "mode": "chat"
+  },
+  "minimax/MiniMax-M2": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M2.1": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M2.1-lightning": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M2.5": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M2.5-lightning": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M3": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "minimax/MiniMax-M3.1-Flash": {
+   "litellm_provider": "minimax",
+   "max_input_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/codestral-2508": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/codestral-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/codestral-mamba-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat"
+  },
+  "mistral/deepseek-v4-1-flash-1017": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/devstral-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/devstral-medium-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/devstral-small-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/glm-5-2": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/labs-leanstral-1-5": {
+   "deprecation_date": "2026-09-30",
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/labs-leanstral-1-5-1": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/magistral-medium-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/magistral-small-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/ministral-14b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-14b-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-3-14b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-3-3b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-3-8b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-3b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-3b-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-8b-2512": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/ministral-8b-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-code-agent-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-code-fim-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-code-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-large-2512": {
+   "deprecation_date": "2027-04-30",
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-large-3": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-large-4": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-large-4-0": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-large-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/mistral-medium": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-medium-2604": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-medium-3": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-medium-3-5": {
+   "deprecation_date": "2027-04-30",
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-medium-3.5": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-medium-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-small": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 32000,
+   "max_output_tokens": 8191,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-small-2603": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-small-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-tiny": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 32000,
+   "max_output_tokens": 8191,
+   "mode": "chat"
+  },
+  "mistral/mistral-vibe-cli-fast": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-vibe-cli-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/mistral-vibe-cli-with-tools": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/open-mistral-nemo": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat"
+  },
+  "mistral/pixtral-large-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/voxtral-small-2507": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 32768,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/voxtral-small-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 32768,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "mistral/zai-glm-5": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/zai-glm-5-2": {
+   "deprecation_date": "2026-10-31",
+   "deprecation_source": "https://docs.mistral.ai/getting-started/models/models_overview",
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/zai-glm-5-3": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/zai-glm-5-3-flash": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "mistral/zai-glm-latest": {
+   "litellm_provider": "mistral",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k2.5": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k2.6": {
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k2.7-code": {
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 262144,
+   "max_output_tokens": 262144,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k3": {
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k3.1-pro": {
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/kimi-k3.1-pro-highspeed": {
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "moonshot/moonshot-v1-128k": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-128k-vision-preview": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-32k": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 32768,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-32k-vision-preview": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 32768,
+   "max_output_tokens": 32768,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-8k": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-8k-vision-preview": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 8192,
+   "max_output_tokens": 8192,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "moonshot/moonshot-v1-auto": {
+   "deprecation_date": "2026-08-31",
+   "litellm_provider": "moonshot",
+   "max_input_tokens": 131072,
+   "max_output_tokens": 131072,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "o1": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o1-2024-12-17": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "o1-pro": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "o1-pro-2025-03-19": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "o3": {
+   "deprecation_date": "2026-12-11",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-2025-04-16": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-deep-research": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-deep-research-2025-06-26": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-mini": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-mini-2025-01-31": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-pro": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o3-pro-2025-06-10": {
+   "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o4-mini": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o4-mini-2025-04-16": {
+   "deprecation_date": "2026-10-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "chat",
+   "successor_model": "gpt-5.6-terra",
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o4-mini-deep-research": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "o4-mini-deep-research-2025-06-26": {
+   "deprecation_date": "2026-07-23",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
+   "litellm_provider": "openai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 100000,
+   "mode": "responses",
+   "successor_model": "gpt-5.6-sol",
+   "supports_function_calling": false,
+   "supports_parallel_function_calling": false,
+   "supports_reasoning": true
+  },
+  "openai/container": {
+   "litellm_provider": "openai",
+   "mode": "chat"
+  },
+  "xai/grok-4.20": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-0309": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-0309-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-0309-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta-0309": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta-0309-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-beta-0309-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta-latest-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-beta-latest-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-beta-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-beta-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-experimental-beta-0304": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-experimental-beta-0304-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-experimental-beta-0304-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-experimental-beta-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-experimental-beta-non-reasoning-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-experimental-beta-reasoning-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-0309": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-beta-0309": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-beta-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-experimental-beta-0304": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-experimental-beta-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-multi-agent-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "responses",
+   "supports_function_calling": false,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-non-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-non-reasoning-gv2": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-non-reasoning-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "xai/grok-4.20-reasoning": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-reasoning-gv2": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.20-reasoning-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.3": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.3-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 1000000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.5": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 500000,
+   "max_output_tokens": 500000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.5-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 500000,
+   "max_output_tokens": 500000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.6": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 500000,
+   "max_output_tokens": 500000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-4.7": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 500000,
+   "max_output_tokens": 500000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-build-0.1": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-build-latest": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 500000,
+   "max_output_tokens": 500000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-code-fast": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-code-fast-1": {
+   "deprecation_date": "2026-05-15",
+   "deprecation_source": "https://docs.x.ai/developers/migration/may-15-retirement",
+   "litellm_provider": "xai",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "successor_model": "xai/grok-build-0.1",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "xai/grok-code-fast-1-0825": {
+   "litellm_provider": "xai",
+   "max_input_tokens": 256000,
+   "max_output_tokens": 256000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-4-32b-0414-128k": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5-air": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5-airx": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5-flash": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5-x": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.5v": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 128000,
+   "max_output_tokens": 32000,
+   "mode": "chat",
+   "supports_function_calling": true
+  },
+  "zai/glm-4.6": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-4.7": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-4.7-flash": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5-code": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5.1": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5.2": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5.3": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 1000000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5.3-flash": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  },
+  "zai/glm-5v-turbo": {
+   "litellm_provider": "zai",
+   "max_input_tokens": 200000,
+   "max_output_tokens": 128000,
+   "mode": "chat",
+   "supports_function_calling": true,
+   "supports_reasoning": true
+  }
+ },
+ "source": "https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json",
+ "taken": "2026-11-12"
+}

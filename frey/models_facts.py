@@ -3,7 +3,7 @@
 checkout (https://github.com/anomalyco/models.dev, MIT).
 
     python3 tools/models_facts.py <models.dev checkout> [--out configs/models-facts.json] [--check]
-        [--vendors <toml>] [--overrides <toml>] [--upstream <url>] [--commit <id> --date <time>]
+        [--vendors <toml>] [--overrides <toml>] [--pi <snapshot>] [--sources <dir>] [--upstream <url>] [--commit <id> --date <time>]
     (--upstream: the repository the checkout is of, written into the header — our fork's when the catalog
     builds from it; the last two for tests)
 
@@ -12,7 +12,10 @@ serves: its limits, prices (input / output / reasoning / cache read and write, t
 time-of-day multipliers as models.dev writes them), modalities, tool and reasoning support, status, dates,
 open weights and the benchmarks its lab reports — the provider's file merged over its `base_model` (lab)
 file the way models.dev merges them (plain tables deep-merge, arrays and values replace,
-`base_model_omit` removes after merging). Then `configs/models-facts-overrides.toml` on top.
+`base_model_omit` removes after merging). Then `configs/models-facts-overrides.toml` on top, then (T-0173)
+pi's interface layer from `--pi` (default `configs/sources/pi-ai.json`, skipped when absent; see
+tools/models_pi.py); T-0174: OpenRouter's, LiteLLM's and aider's snapshots from `--sources` (default: the
+directory of `--pi`; see tools/models_sources.py).
 
 Reproducible: the same checkout gives the same bytes (`generated_at` is the upstream commit's time, not
 now; keys sorted; one model per line). `--check` rewrites nothing and fails when the file would change.
@@ -29,6 +32,9 @@ import subprocess
 import sys
 import tomllib
 from urllib.parse import urlparse
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import models_pi  # noqa: E402  (T-0173: the interface layer)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FREY = os.path.dirname(HERE)
@@ -176,6 +182,33 @@ def hosts(url):
     return {urlparse(url).hostname} if url else set()
 
 
+def render(header, providers):
+    """The table's bytes: the header keys sorted, one model per line (T-0173: a preset's
+    `interface_defaults` on one line before its models)."""
+    lines = ["{"]
+    for k in sorted(header):
+        lines.append(f"  {json.dumps(k)}: {json.dumps(header[k], ensure_ascii=False)},")
+    lines.append('  "providers": {')
+    pnames = sorted(providers)
+    for i, p in enumerate(pnames):
+        entry = providers[p]
+        lines.append(f"    {json.dumps(p)}: {{")
+        lines.append(f'      "models_dev": {json.dumps(entry["models_dev"])},')
+        if entry.get("interface_defaults"):
+            body = json.dumps(entry["interface_defaults"], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            lines.append(f'      "interface_defaults": {body},')
+        lines.append('      "models": {')
+        mids = sorted(entry["models"])
+        for j, mid in enumerate(mids):
+            body = json.dumps(entry["models"][mid], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            lines.append(f"        {json.dumps(mid)}: {body}" + ("," if j + 1 < len(mids) else ""))
+        lines.append("      }")
+        lines.append("    }" + ("," if i + 1 < len(pnames) else ""))
+    lines.append("  }")
+    lines.append("}")
+    return "\n".join(lines) + "\n"
+
+
 def main(argv):
     if len(argv) < 2:
         sys.exit(__doc__)
@@ -235,25 +268,18 @@ def main(argv):
         "overrides_version": overrides.get("version", 0),
         "license": "MIT (Copyright (c) 2025 models.dev); configs/models-facts.LICENSE",
     }
-    lines = ["{"]
-    for k in sorted(header):
-        lines.append(f"  {json.dumps(k)}: {json.dumps(header[k], ensure_ascii=False)},")
-    lines.append('  "providers": {')
-    pnames = sorted(providers)
-    for i, p in enumerate(pnames):
-        entry = providers[p]
-        lines.append(f"    {json.dumps(p)}: {{")
-        lines.append(f'      "models_dev": {json.dumps(entry["models_dev"])},')
-        lines.append('      "models": {')
-        mids = sorted(entry["models"])
-        for j, mid in enumerate(mids):
-            body = json.dumps(entry["models"][mid], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-            lines.append(f"        {json.dumps(mid)}: {body}" + ("," if j + 1 < len(mids) else ""))
-        lines.append("      }")
-        lines.append("    }" + ("," if i + 1 < len(pnames) else ""))
-    lines.append("  }")
-    lines.append("}")
-    text = "\n".join(lines) + "\n"
+    # T-0173: pi's interface layer (tools/models_pi.py) on top, when its snapshot is there.
+    pi_path = flag("--pi", models_pi.SNAPSHOT)
+    if os.path.exists(pi_path):
+        # T-0174: pi's layer and OpenRouter's, LiteLLM's, aider's hints (tools/models_sources.py), the
+        # snapshots from --sources (default: pi's directory).
+        import models_sources
+
+        sources = flag("--sources", os.path.dirname(pi_path))
+        table = models_sources.build({**header, "providers": providers}, sources=sources, pi=pi_path)[0]
+        header = {k: v for k, v in table.items() if k != "providers"}
+        providers = table["providers"]
+    text = render(header, providers)
     count = sum(len(e["models"]) for e in providers.values())
     for r in report:
         print("models_facts: " + r, file=sys.stderr)

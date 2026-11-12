@@ -47,6 +47,18 @@
       "additionalProperties": {
         "$ref": "#/$defs/Provider"
       }
+    },
+    "interface_source": {
+      "type": "string",
+      "description": "T-0173: where the interface layer came from (pi-ai <version>, its license file)."
+    },
+    "sources": {
+      "type": "object",
+      "description": "T-0174 (AD159): the day (or version) each source of the table was taken: models.dev (its upstream commit's day), pi, openrouter, litellm, aider. The table's date for the release check is the oldest taken day but models.dev's (tools/models_sources.py age).",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
     }
   },
   "additionalProperties": false,
@@ -66,6 +78,21 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/$defs/Model"
+          }
+        },
+        "interface_defaults": {
+          "description": "T-0173: what every merged model of the preset has alike, per protocol — what a model the table does not have yet gets (never thinking levels).",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "messages_api",
+              "openai_compat",
+              "responses",
+              "gemini"
+            ]
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Interface"
           }
         }
       },
@@ -149,6 +176,55 @@
           "items": {
             "$ref": "#/$defs/Benchmark"
           }
+        },
+        "interface": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "messages_api",
+              "openai_compat",
+              "responses",
+              "gemini"
+            ]
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Interface"
+          }
+        },
+        "lifecycle": {
+          "type": "object",
+          "description": "T-0174: when the model retires and what replaces it (LiteLLM's deprecation_date, successor_model, deprecation_source).",
+          "required": [
+            "retires",
+            "from"
+          ],
+          "properties": {
+            "retires": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            },
+            "successor": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "type": "string"
+            },
+            "from": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "cache_min_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "T-0174: the shortest prompt the vendor's cache takes (LiteLLM's prompt_cache_min_tokens)."
+        },
+        "parallel_tool_calls": {
+          "type": "boolean",
+          "description": "T-0174: the model can call several tools in one response (LiteLLM's supports_parallel_function_calling)."
         }
       },
       "additionalProperties": false
@@ -293,6 +369,99 @@
           "type": "string"
         }
       },
+      "additionalProperties": false
+    },
+    "Interface": {
+      "type": "object",
+      "description": "T-0173 (AD159): how to call the model on one protocol, from pi-ai (tools/models_pi.py). Optional: a model without it is called with the protocol defaults and the quirk table. T-0174: OpenRouter's own thinking levels for the openrouter preset's models (thinking_from).",
+      "properties": {
+        "thinking_levels": {
+          "type": "array",
+          "description": "The levels the model has, in order: [pi level name, the value the vendor takes].",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "thinking_off": {
+          "type": "string"
+        },
+        "thinking_always_on": {
+          "type": "boolean"
+        },
+        "thinking_format": {
+          "type": "string"
+        },
+        "supports_reasoning_effort": {
+          "type": "boolean"
+        },
+        "reasoning_on_assistant_messages": {
+          "type": "boolean"
+        },
+        "max_tokens_field": {
+          "type": "string",
+          "enum": [
+            "max_tokens",
+            "max_completion_tokens"
+          ]
+        },
+        "supports_developer_role": {
+          "type": "boolean"
+        },
+        "supports_strict_mode": {
+          "type": "boolean"
+        },
+        "session_affinity_headers": {
+          "type": "boolean"
+        },
+        "session_affinity_format": {
+          "type": "string"
+        },
+        "cache_control_format": {
+          "type": "string"
+        },
+        "other": {
+          "type": "object",
+          "description": "The rest of pi's compat fields, as pi writes them (kept, not read)."
+        },
+        "context_window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_output": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reasoning": {
+          "type": "boolean"
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "thinking_from": {
+          "type": "string",
+          "minLength": 1,
+          "description": "T-0174: where thinking_levels came from when not the interface's `from` (OpenRouter's own list for its models)."
+        },
+        "thinking_default": {
+          "type": "string",
+          "minLength": 1,
+          "description": "T-0174: the level the endpoint uses when none is sent (OpenRouter's default_effort)."
+        }
+      },
+      "required": [
+        "from"
+      ],
       "additionalProperties": false
     }
   }
