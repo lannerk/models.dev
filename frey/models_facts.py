@@ -3,7 +3,7 @@
 checkout (https://github.com/anomalyco/models.dev, MIT).
 
     python3 tools/models_facts.py <models.dev checkout> [--out configs/models-facts.json] [--check]
-        [--vendors <toml>] [--overrides <toml>] [--pi <snapshot>] [--sources <dir>] [--upstream <url>] [--commit <id> --date <time>]
+        [--vendors <toml>] [--overrides <toml>] [--features <toml>] [--pi <snapshot>] [--sources <dir>] [--upstream <url>] [--commit <id> --date <time>]
     (--upstream: the repository the checkout is of, written into the header — our fork's when the catalog
     builds from it; the last two for tests)
 
@@ -12,7 +12,9 @@ serves: its limits, prices (input / output / reasoning / cache read and write, t
 time-of-day multipliers as models.dev writes them), modalities, tool and reasoning support, status, dates,
 open weights and the benchmarks its lab reports — the provider's file merged over its `base_model` (lab)
 file the way models.dev merges them (plain tables deep-merge, arrays and values replace,
-`base_model_omit` removes after merging). Then `configs/models-facts-overrides.toml` on top, then (T-0173)
+`base_model_omit` removes after merging), models.dev's web search price included (T-0187). Then
+`configs/models-facts-overrides.toml` on top, and (T-0187) each preset's `features` from
+`configs/vendor-features.toml` (what the vendor offers besides the model, with evidence); then (T-0173)
 pi's interface layer from `--pi` (default `configs/sources/pi-ai.json`, skipped when absent; see
 tools/models_pi.py); T-0174: OpenRouter's, LiteLLM's and aider's snapshots from `--sources` (default: the
 directory of `--pi`; see tools/models_sources.py).
@@ -39,6 +41,7 @@ import models_pi  # noqa: E402  (T-0173: the interface layer)
 HERE = os.path.dirname(os.path.abspath(__file__))
 FREY = os.path.dirname(HERE)
 VENDORS = os.path.join(FREY, "configs", "vendors.toml")
+FEATURES = os.path.join(FREY, "configs", "vendor-features.toml")
 OVERRIDES = os.path.join(FREY, "configs", "models-facts-overrides.toml")
 OUT = os.path.join(FREY, "configs", "models-facts.json")
 FORMAT = 1
@@ -142,6 +145,15 @@ def cost_of(raw):
             mults.append({"when": m.get("when", {}), "factor": factor})
     if mults:
         c["multipliers"] = mults
+    # T-0187: models.dev's `[cost.web_search]` — USD per 1,000 searches (its overrides as written; a
+    # multiplier's object factor names only token prices, so it leaves this one alone).
+    search = raw.get("web_search") if isinstance(raw.get("web_search"), dict) else {}
+    if number(search.get("price")) is not None:
+        c["web_search"] = search["price"]
+        if search.get("overrides"):
+            c["web_search_overrides"] = [
+                {"when": o.get("when", {}), "price": o["price"]} for o in search["overrides"] if number(o.get("price")) is not None
+            ]
     return {k: v for k, v in c.items() if v is not None}
 
 
@@ -197,6 +209,9 @@ def render(header, providers):
         if entry.get("interface_defaults"):
             body = json.dumps(entry["interface_defaults"], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
             lines.append(f'      "interface_defaults": {body},')
+        if entry.get("features"):
+            body = json.dumps(entry["features"], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            lines.append(f'      "features": {body},')
         lines.append('      "models": {')
         mids = sorted(entry["models"])
         for j, mid in enumerate(mids):
@@ -232,6 +247,12 @@ def main(argv):
     if os.path.exists(overrides_file):
         with open(overrides_file, "rb") as f:
             overrides = tomllib.load(f)
+    # T-0187 (AD171): what vendors offer besides the model, recorded by hand with where it was read.
+    features = {"version": 0, "feature": []}
+    features_file = flag("--features", FEATURES)
+    if os.path.exists(features_file):
+        with open(features_file, "rb") as f:
+            features = tomllib.load(f)
     providers, report = {}, []
     for v in vendors:
         pid = v.get("models_dev")
@@ -259,6 +280,9 @@ def main(argv):
             if o.get("vendor") == v["name"] and o.get("model") in models:
                 models[o["model"]] = merge(models[o["model"]], o.get("set", {}))
         providers[v["name"]] = {"models_dev": pid, "models": models}
+        mine = [{k: x for k, x in f.items() if k != "vendor"} for f in features.get("feature", []) if f.get("vendor") == v["name"]]
+        if mine:
+            providers[v["name"]]["features"] = sorted(mine, key=lambda f: (f["feature"], f["form"], f.get("tool", "")))
     header = {
         "format": FORMAT,
         "source": "models.dev",
@@ -266,6 +290,7 @@ def main(argv):
         "upstream_commit": commit,
         "generated_at": when,
         "overrides_version": overrides.get("version", 0),
+        "features_version": features.get("version", 0),
         "license": "MIT (Copyright (c) 2025 models.dev); configs/models-facts.LICENSE",
     }
     # T-0173: pi's interface layer (tools/models_pi.py) on top, when its snapshot is there.

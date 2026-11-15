@@ -1,0 +1,56 @@
+# What vendors themselves offer besides the model (T-0187, AD171): facts, not switches. tools/models_facts.py
+# puts them into configs/models-facts.json under each preset's `features`; the user's switches are in
+# config.toml (`models.builtin.<vendor>.<feature>`, `features.prefer_ours.<feature>`, section 12.2).
+#
+# One [[feature]] per thing a vendor offers:
+#   vendor    a preset name (configs/vendors.toml)
+#   feature   the Frey feature it stands in for: a tool's name (`web_search`, `web_fetch`, …)
+#   form      "endpoint": an API of its own that Frey calls with the same key (it belongs to the vendor, every
+#             model has it); "server_tool": a tool in the model request that the vendor runs
+#   endpoint  (endpoint) its address
+#   tool      (server_tool) the tool's name in the request; `models`: the models it works with (none: all);
+#             `with_custom_tools`: whether it can go in a request with the request's own tools — Frey's every
+#             request has its own, so `false` means Frey cannot use it
+#   price     per use: `usd` per `per` `unit`s, and what is charged
+#   evidence  where each fact was read, and when (`read`); nothing is written that was not read
+version = 1
+
+[[feature]]
+vendor = "deepseek"
+feature = "web_search"
+form = "endpoint"
+endpoint = "https://api.deepseek.com/v1/tools/search"
+price = { usd = 0.75, per = 1000, unit = "request", charged = "only an HTTP 200 answer with at least one result; failures, empty results and timeouts are free" }
+limits = ["query: 1 to 128 characters", "count: 1 to 50 (the price does not depend on it)", "100 requests a second per account"]
+evidence = [
+  { url = "https://api-docs.deepseek.com/guides/search", read = "2026-11-15" },
+  { url = "https://api-docs.deepseek.com/quick_start/pricing", read = "2026-11-15" },
+]
+
+[[feature]]
+vendor = "deepseek"
+feature = "web_search"
+form = "server_tool"
+tool = "deepseek_web_search"
+models = ["deepseek-flash"]
+with_custom_tools = false
+note = "DeepSeek answers 400 \"other tools cannot be used together with deepseek_web_search, deepseek_read_url, safety_check or title yet\""
+price = { usd = 0.75, per = 1000, unit = "query", charged = "each query of a call that found results (a call with three queries counts three)" }
+evidence = [
+  { url = "https://api-docs.deepseek.com/guides/web_tools", read = "2026-11-15" },
+  { url = "https://api-docs.deepseek.com/quick_start/pricing", read = "2026-11-15" },
+]
+
+[[feature]]
+vendor = "deepseek"
+feature = "web_fetch"
+form = "server_tool"
+tool = "deepseek_read_url"
+models = ["deepseek-flash"]
+with_custom_tools = false
+note = "DeepSeek answers 400 \"other tools cannot be used together with deepseek_web_search, deepseek_read_url, safety_check or title yet\""
+price = { usd = 0.75, per = 1000, unit = "fetch", charged = "each page fetched" }
+evidence = [
+  { url = "https://api-docs.deepseek.com/guides/web_tools", read = "2026-11-15" },
+  { url = "https://api-docs.deepseek.com/quick_start/pricing", read = "2026-11-15" },
+]

@@ -59,6 +59,11 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "features_version": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "T-0187: configs/vendor-features.toml's version (absent: a table from before it)."
     }
   },
   "additionalProperties": false,
@@ -93,6 +98,13 @@
           },
           "additionalProperties": {
             "$ref": "#/$defs/Interface"
+          }
+        },
+        "features": {
+          "description": "T-0187 (AD171): what the vendor offers besides the model, recorded by hand (configs/vendor-features.toml) with where each fact was read. Facts only: the user's switches are models.builtin.<vendor>.<feature> and features.prefer_ours.<feature>.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VendorFeature"
           }
         }
       },
@@ -299,6 +311,17 @@
             },
             "additionalProperties": false
           }
+        },
+        "web_search": {
+          "type": "number",
+          "minimum": 0,
+          "description": "T-0187: USD per 1,000 web searches the vendor runs (models.dev's [cost.web_search])."
+        },
+        "web_search_overrides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Override"
+          }
         }
       },
       "additionalProperties": false
@@ -461,6 +484,137 @@
       },
       "required": [
         "from"
+      ],
+      "additionalProperties": false
+    },
+    "VendorFeature": {
+      "type": "object",
+      "required": [
+        "feature",
+        "form",
+        "evidence"
+      ],
+      "properties": {
+        "feature": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "The Frey feature it stands in for (a tool's name: web_search, web_fetch, …)."
+        },
+        "form": {
+          "enum": [
+            "endpoint",
+            "server_tool"
+          ],
+          "description": "endpoint: an API of the vendor's own that Frey calls with the same key (every model of the vendor has it); server_tool: a tool in the model request that the vendor runs."
+        },
+        "endpoint": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "The models a server tool works with (absent: all of the vendor's)."
+        },
+        "with_custom_tools": {
+          "type": "boolean",
+          "description": "Whether a server tool can go in a request with the request's own tools (false: Frey, whose every request has its own, cannot use it)."
+        },
+        "price": {
+          "type": "object",
+          "required": [
+            "usd",
+            "per",
+            "unit"
+          ],
+          "properties": {
+            "usd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "per": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1
+            },
+            "charged": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "description": "usd per `per` units (a price per use, not per token)."
+        },
+        "limits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "url",
+              "read"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "pattern": "^https://"
+              },
+              "read": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "form": {
+                "const": "endpoint"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "endpoint"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "form": {
+                "const": "server_tool"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "tool"
+            ]
+          }
+        }
       ],
       "additionalProperties": false
     }

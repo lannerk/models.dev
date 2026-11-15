@@ -9,6 +9,7 @@ reviewed before any client uses them for prices (AD132 ⑤). Upstream's files ar
 | `vendors.toml` | Frey's presets and the models.dev provider each maps to (the same file as Frey's `src/frey/configs/vendors.toml`) |
 | `facts-1.schema.json` | The table's schema (the same file as Frey's `src/frey/schemas/models/facts-1.schema.json`) |
 | `overrides/models-facts-overrides.toml` | Our corrections over models.dev's data |
+| `overrides/vendor-features.toml` | T-0187: what vendors offer besides the model (search endpoints, tools they run), each fact with where it was read (the same file as Frey's `src/frey/configs/vendor-features.toml`) |
 | `facts_report.py`, `test_facts_report.py` | What a sync changes: prices moved by more than 30 %, models removed, new models; the schema |
 | `sync.sh` | The weekly sync, run by `.github/workflows/frey-sync.yml` (or by hand: `git remote add upstream …; git switch -c frey-sync/x; bash frey/sync.sh /tmp/sync`) |
 
