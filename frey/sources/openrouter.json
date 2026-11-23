@@ -1326,7 +1326,7 @@
   },
   "deepseek/deepseek-chat": {
    "context_length": 163840,
-   "max_completion_tokens": 16384,
+   "max_completion_tokens": 16000,
    "supported_parameters": [
     "frequency_penalty",
     "logit_bias",
@@ -1527,7 +1527,7 @@
   },
   "deepseek/deepseek-v4-flash-0731": {
    "context_length": 1048576,
-   "max_completion_tokens": 943718,
+   "max_completion_tokens": 384000,
    "reasoning": {
     "default_effort": "high",
     "default_enabled": true,
@@ -1638,7 +1638,7 @@
   },
   "deepseek/deepseek-v4-pro": {
    "context_length": 1048576,
-   "max_completion_tokens": 384000,
+   "max_completion_tokens": 393216,
    "reasoning": {
     "default_effort": "high",
     "mandatory": false,
@@ -1710,7 +1710,7 @@
   },
   "deepseek/deepseek-v4.1-flash": {
    "context_length": 1048576,
-   "max_completion_tokens": 943718,
+   "max_completion_tokens": 393216,
    "reasoning": {
     "default_effort": "high",
     "default_enabled": true,
@@ -1804,12 +1804,14 @@
     "frequency_penalty",
     "include_reasoning",
     "logit_bias",
+    "logprobs",
     "max_tokens",
     "min_p",
     "presence_penalty",
     "reasoning",
     "reasoning_effort",
     "repetition_penalty",
+    "response_format",
     "seed",
     "stop",
     "structured_outputs",
@@ -1817,6 +1819,7 @@
     "tool_choice",
     "tools",
     "top_k",
+    "top_logprobs",
     "top_p"
    ]
   },
@@ -1838,6 +1841,7 @@
     "frequency_penalty",
     "include_reasoning",
     "logit_bias",
+    "logprobs",
     "max_tokens",
     "min_p",
     "presence_penalty",
@@ -1852,6 +1856,7 @@
     "tool_choice",
     "tools",
     "top_k",
+    "top_logprobs",
     "top_p"
    ]
   },
@@ -2753,6 +2758,62 @@
     "top_p"
    ]
   },
+  "google/gemini-4-hydrogen": {
+   "context_length": 1048576,
+   "max_completion_tokens": 943718,
+   "reasoning": {
+    "default_effort": "medium",
+    "mandatory": true,
+    "supported_efforts": [
+     "xhigh",
+     "high",
+     "medium",
+     "low"
+    ]
+   },
+   "supported_parameters": [
+    "include_reasoning",
+    "max_tokens",
+    "reasoning",
+    "reasoning_effort",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_p"
+   ]
+  },
+  "google/gemini-4-hydrogen:batch": {
+   "context_length": 1048576,
+   "max_completion_tokens": 943718,
+   "reasoning": {
+    "default_effort": "medium",
+    "mandatory": true,
+    "supported_efforts": [
+     "xhigh",
+     "high",
+     "medium",
+     "low"
+    ]
+   },
+   "supported_parameters": [
+    "include_reasoning",
+    "max_tokens",
+    "reasoning",
+    "reasoning_effort",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_p"
+   ]
+  },
   "google/gemini-nano-banana-2.1": {
    "context_length": 65536,
    "max_completion_tokens": 58982,
@@ -2905,7 +2966,7 @@
   },
   "google/gemma-4-26b-a4b-it": {
    "context_length": 262144,
-   "max_completion_tokens": 128000,
+   "max_completion_tokens": 235929,
    "reasoning": {
     "default_enabled": false,
     "mandatory": false
@@ -3186,6 +3247,30 @@
     "top_p"
    ]
   },
+  "inclusionai/ling-3.2-flash:free": {
+   "context_length": 1048576,
+   "max_completion_tokens": 262144,
+   "reasoning": {
+    "default_enabled": true,
+    "mandatory": false
+   },
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "max_tokens",
+    "presence_penalty",
+    "reasoning",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_p"
+   ]
+  },
   "inference-net/schematron-v2-small": {
    "context_length": 128000,
    "max_completion_tokens": 8192,
@@ -3239,62 +3324,6 @@
     "reasoning",
     "repetition_penalty",
     "response_format",
-    "structured_outputs",
-    "temperature",
-    "top_k",
-    "top_logprobs",
-    "top_p"
-   ]
-  },
-  "liquid/lfm-2.5-2.6b": {
-   "context_length": 128000,
-   "expiration_date": "2026-11-13",
-   "max_completion_tokens": 8192,
-   "reasoning": {
-    "mandatory": true
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "logprobs",
-    "max_completion_tokens",
-    "max_tokens",
-    "min_p",
-    "presence_penalty",
-    "reasoning",
-    "repetition_penalty",
-    "response_format",
-    "seed",
-    "stop",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_logprobs",
-    "top_p"
-   ]
-  },
-  "liquid/lfm-2.5-2.6b:free": {
-   "context_length": 65536,
-   "expiration_date": "2026-11-13",
-   "max_completion_tokens": 8192,
-   "reasoning": {
-    "mandatory": true
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "logprobs",
-    "max_completion_tokens",
-    "max_tokens",
-    "min_p",
-    "presence_penalty",
-    "reasoning",
-    "repetition_penalty",
-    "response_format",
-    "seed",
-    "stop",
     "structured_outputs",
     "temperature",
     "tool_choice",
@@ -3442,6 +3471,8 @@
     "max_tokens",
     "stop",
     "temperature",
+    "tool_choice",
+    "tools",
     "top_k",
     "top_p"
    ]
@@ -3489,7 +3520,8 @@
   },
   "meta-llama/llama-3.2-3b-instruct": {
    "context_length": 131072,
-   "max_completion_tokens": 117964,
+   "expiration_date": "2026-11-20",
+   "max_completion_tokens": 72000,
    "supported_parameters": [
     "frequency_penalty",
     "logit_bias",
@@ -3638,6 +3670,7 @@
     "frequency_penalty",
     "include_reasoning",
     "logit_bias",
+    "logprobs",
     "max_tokens",
     "min_p",
     "presence_penalty",
@@ -3652,6 +3685,7 @@
     "tool_choice",
     "tools",
     "top_k",
+    "top_logprobs",
     "top_p"
    ]
   },
@@ -3839,7 +3873,7 @@
   },
   "meta/muse-spark-open": {
    "context_length": 1048576,
-   "max_completion_tokens": 262144,
+   "max_completion_tokens": 943718,
    "reasoning": {
     "default_effort": "medium",
     "mandatory": true,
@@ -3924,8 +3958,8 @@
    ]
   },
   "minimax/minimax-m2.5": {
-   "context_length": 200000,
-   "max_completion_tokens": 128000,
+   "context_length": 198000,
+   "max_completion_tokens": 176947,
    "reasoning": {
     "mandatory": true
    },
@@ -4582,8 +4616,7 @@
   },
   "moonshotai/kimi-k2.5": {
    "context_length": 262144,
-   "expiration_date": "2026-11-18",
-   "max_completion_tokens": 65536,
+   "max_completion_tokens": 235929,
    "reasoning": {
     "default_enabled": true,
     "mandatory": false
@@ -4689,8 +4722,10 @@
     "include_reasoning",
     "logit_bias",
     "logprobs",
+    "max_completion_tokens",
     "max_tokens",
     "min_p",
+    "parallel_tool_calls",
     "presence_penalty",
     "reasoning",
     "reasoning_effort",
@@ -4871,6 +4906,8 @@
     "response_format",
     "structured_outputs",
     "temperature",
+    "tool_choice",
+    "tools",
     "top_k",
     "top_logprobs",
     "top_p"
@@ -5194,7 +5231,7 @@
   },
   "nvidia/nemotron-3.5-super-vl": {
    "context_length": 1048576,
-   "max_completion_tokens": 943718,
+   "max_completion_tokens": 235929,
    "reasoning": {
     "mandatory": false
    },
@@ -7557,7 +7594,7 @@
   },
   "openai/gpt-oss-20b": {
    "context_length": 131072,
-   "max_completion_tokens": 117964,
+   "max_completion_tokens": 65536,
    "reasoning": {
     "default_effort": "medium",
     "mandatory": true,
@@ -7880,6 +7917,45 @@
    ]
   },
   "particle-ai/particle-1": {
+   "context_length": 1048576,
+   "max_completion_tokens": 131072,
+   "reasoning": {
+    "default_effort": "high",
+    "default_enabled": true,
+    "mandatory": false,
+    "supported_efforts": [
+     "max",
+     "xhigh",
+     "high",
+     "medium",
+     "low",
+     "minimal",
+     "none"
+    ]
+   },
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "logprobs",
+    "max_tokens",
+    "min_p",
+    "presence_penalty",
+    "reasoning",
+    "reasoning_effort",
+    "repetition_penalty",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_logprobs",
+    "top_p"
+   ]
+  },
+  "particle-ai/particle-1:free": {
    "context_length": 1048576,
    "max_completion_tokens": 131072,
    "reasoning": {
@@ -8360,11 +8436,8 @@
    "context_length": 262144,
    "max_completion_tokens": 235929,
    "supported_parameters": [
-    "frequency_penalty",
     "max_tokens",
-    "response_format",
     "stop",
-    "structured_outputs",
     "temperature",
     "tool_choice",
     "tools",
@@ -8482,26 +8555,6 @@
     "top_p"
    ]
   },
-  "qwen/qwen3-vl-30b-a3b-thinking": {
-   "context_length": 262144,
-   "max_completion_tokens": 235929,
-   "reasoning": {
-    "mandatory": true
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "response_format",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ]
-  },
   "qwen/qwen3-vl-8b-instruct": {
    "context_length": 262144,
    "max_completion_tokens": 235929,
@@ -8610,7 +8663,7 @@
   },
   "qwen/qwen3.5-397b-a17b": {
    "context_length": 262144,
-   "max_completion_tokens": 64000,
+   "max_completion_tokens": 81920,
    "reasoning": {
     "mandatory": false
    },
@@ -8982,7 +9035,7 @@
    ]
   },
   "qwen/qwen3.8-27b": {
-   "context_length": 1048575,
+   "context_length": 1024000,
    "max_completion_tokens": 235929,
    "reasoning": {
     "default_effort": "xhigh",
@@ -9201,6 +9254,40 @@
     "max_tokens",
     "presence_penalty",
     "reasoning",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_logprobs",
+    "top_p"
+   ]
+  },
+  "qwen/qwen4-max": {
+   "context_length": 1000000,
+   "max_completion_tokens": 393216,
+   "reasoning": {
+    "default_effort": "high",
+    "default_enabled": true,
+    "mandatory": false,
+    "supported_efforts": [
+     "xhigh",
+     "high",
+     "low",
+     "none"
+    ]
+   },
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "logprobs",
+    "max_tokens",
+    "presence_penalty",
+    "reasoning",
+    "reasoning_effort",
     "response_format",
     "seed",
     "stop",
@@ -9510,24 +9597,6 @@
     "max_tokens"
    ]
   },
-  "stepfun/step-3.5-flash": {
-   "context_length": 262144,
-   "max_completion_tokens": 65536,
-   "reasoning": {
-    "mandatory": true
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ]
-  },
   "stepfun/step-3.7-flash": {
    "context_length": 262144,
    "max_completion_tokens": 230400,
@@ -9595,24 +9664,6 @@
     "top_p"
    ]
   },
-  "tencent/hunyuan-a13b-instruct": {
-   "context_length": 131072,
-   "max_completion_tokens": 117964,
-   "reasoning": {
-    "mandatory": false
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "response_format",
-    "structured_outputs",
-    "temperature",
-    "top_k",
-    "top_p"
-   ]
-  },
   "tencent/hy-mt2-1.8b": {
    "context_length": 8192,
    "max_completion_tokens": 4096,
@@ -9663,10 +9714,8 @@
    "supported_parameters": [
     "frequency_penalty",
     "include_reasoning",
-    "logit_bias",
     "max_completion_tokens",
     "max_tokens",
-    "min_p",
     "presence_penalty",
     "reasoning",
     "reasoning_effort",
@@ -9861,6 +9910,44 @@
     "tool_choice",
     "tools",
     "top_k",
+    "top_p"
+   ]
+  },
+  "thinkingmachines/inkling-2-small": {
+   "context_length": 1048576,
+   "max_completion_tokens": 943718,
+   "reasoning": {
+    "default_effort": "high",
+    "default_enabled": true,
+    "mandatory": true,
+    "supported_efforts": [
+     "max",
+     "high",
+     "medium",
+     "low",
+     "minimal"
+    ]
+   },
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "logit_bias",
+    "logprobs",
+    "max_tokens",
+    "min_p",
+    "presence_penalty",
+    "reasoning",
+    "reasoning_effort",
+    "repetition_penalty",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_logprobs",
     "top_p"
    ]
   },
@@ -10437,7 +10524,7 @@
   },
   "xiaomi/mimo-v2.5-pro": {
    "context_length": 1024000,
-   "max_completion_tokens": 235929,
+   "max_completion_tokens": 131072,
    "reasoning": {
     "mandatory": false
    },
@@ -10752,7 +10839,8 @@
   },
   "z-ai/glm-5.1": {
    "context_length": 204800,
-   "max_completion_tokens": 131072,
+   "expiration_date": "2026-11-20",
+   "max_completion_tokens": 182476,
    "reasoning": {
     "default_enabled": true,
     "mandatory": false
@@ -10800,42 +10888,6 @@
     "max_tokens",
     "min_p",
     "parallel_tool_calls",
-    "presence_penalty",
-    "reasoning",
-    "reasoning_effort",
-    "repetition_penalty",
-    "response_format",
-    "seed",
-    "stop",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_logprobs",
-    "top_p"
-   ]
-  },
-  "z-ai/glm-5.2:batch": {
-   "context_length": 1048576,
-   "max_completion_tokens": 943718,
-   "reasoning": {
-    "default_effort": "high",
-    "default_enabled": true,
-    "mandatory": false,
-    "supported_efforts": [
-     "xhigh",
-     "high",
-     "none"
-    ]
-   },
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "logit_bias",
-    "logprobs",
-    "max_tokens",
-    "min_p",
     "presence_penalty",
     "reasoning",
     "reasoning_effort",
@@ -10981,6 +11033,7 @@
     "reasoning",
     "reasoning_effort",
     "response_format",
+    "structured_outputs",
     "temperature",
     "tool_choice",
     "tools",
@@ -11049,7 +11102,7 @@
   },
   "z-ai/glm-5.3:batch": {
    "context_length": 1048576,
-   "max_completion_tokens": 943718,
+   "max_completion_tokens": 131072,
    "reasoning": {
     "default_effort": "max",
     "default_enabled": true,
@@ -11331,12 +11384,12 @@
   },
   "~google/gemini-flash-latest": {
    "context_length": 1048576,
-   "max_completion_tokens": 65536,
+   "max_completion_tokens": 943718,
    "reasoning": {
     "default_effort": "medium",
-    "default_enabled": true,
     "mandatory": true,
     "supported_efforts": [
+     "xhigh",
      "high",
      "medium",
      "low"
@@ -11403,8 +11456,10 @@
     "include_reasoning",
     "logit_bias",
     "logprobs",
+    "max_completion_tokens",
     "max_tokens",
     "min_p",
+    "parallel_tool_calls",
     "presence_penalty",
     "reasoning",
     "reasoning_effort",
@@ -11687,6 +11742,6 @@
   }
  },
  "source": "https://openrouter.ai/api/v1/models",
- "taken": "2026-11-12",
+ "taken": "2026-11-16",
  "terms": "configs/sources/openrouter.TERMS.md"
 }

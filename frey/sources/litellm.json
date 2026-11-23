@@ -1,5 +1,5 @@
 {
- "commit": "52d1c4cd80162fbf03d7f92def0cb1631f1edfd4",
+ "commit": "2f448a9ee896d6d3ccb2899be0532bb031d49d95",
  "license": "MIT; configs/sources/litellm.LICENSE",
  "models": {
   "chat-latest": {
@@ -991,7 +991,7 @@
    "supports_reasoning": true
   },
   "gemini/gemini-2.5-pro-preview-tts": {
-   "deprecation_date": "2026-11-17",
+   "deprecation_date": "2026-12-18",
    "deprecation_source": "https://ai.google.dev/gemini-api/docs/deprecations",
    "litellm_provider": "gemini",
    "max_input_tokens": 8192,
@@ -1114,6 +1114,16 @@
    "supports_reasoning": true
   },
   "gemini/gemini-4-carbon": {
+   "litellm_provider": "gemini",
+   "max_input_tokens": 1048576,
+   "max_output_tokens": 1048576,
+   "mode": "chat",
+   "prompt_cache_min_tokens": 4096.0,
+   "supports_function_calling": true,
+   "supports_parallel_function_calling": true,
+   "supports_reasoning": true
+  },
+  "gemini/gemini-4-hydrogen": {
    "litellm_provider": "gemini",
    "max_input_tokens": 1048576,
    "max_output_tokens": 1048576,
@@ -1550,6 +1560,7 @@
    "max_input_tokens": 128000,
    "max_output_tokens": 16384,
    "mode": "chat",
+   "successor_model": "gpt-audio-1.5",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true
   },
@@ -1598,7 +1609,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1610,7 +1621,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1658,7 +1669,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-terra",
+   "successor_model": "gpt-6.1-terra",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1670,7 +1681,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-terra",
+   "successor_model": "gpt-6.1-terra",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1682,7 +1693,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-luna",
+   "successor_model": "gpt-6-luna",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1694,7 +1705,7 @@
    "max_input_tokens": 272000,
    "max_output_tokens": 128000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-luna",
+   "successor_model": "gpt-6-luna",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1706,7 +1717,7 @@
    "max_input_tokens": 400000,
    "max_output_tokens": 272000,
    "mode": "responses",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -1718,7 +1729,7 @@
    "max_input_tokens": 400000,
    "max_output_tokens": 272000,
    "mode": "responses",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": true,
    "supports_reasoning": true
@@ -2830,11 +2841,12 @@
   },
   "o3": {
    "deprecation_date": "2026-12-11",
+   "deprecation_source": "https://developers.openai.com/api/docs/deprecations",
    "litellm_provider": "openai",
    "max_input_tokens": 200000,
    "max_output_tokens": 100000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": false,
    "supports_reasoning": true
@@ -2846,7 +2858,7 @@
    "max_input_tokens": 200000,
    "max_output_tokens": 100000,
    "mode": "chat",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": false,
    "supports_reasoning": true
@@ -2906,7 +2918,7 @@
    "max_input_tokens": 200000,
    "max_output_tokens": 100000,
    "mode": "responses",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": false,
    "supports_reasoning": true
@@ -2918,7 +2930,7 @@
    "max_input_tokens": 200000,
    "max_output_tokens": 100000,
    "mode": "responses",
-   "successor_model": "gpt-5.6-sol",
+   "successor_model": "gpt-6.1-sol",
    "supports_function_calling": true,
    "supports_parallel_function_calling": false,
    "supports_reasoning": true
@@ -3444,5 +3456,5 @@
   }
  },
  "source": "https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json",
- "taken": "2026-11-12"
+ "taken": "2026-11-16"
 }

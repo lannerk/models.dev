@@ -12,6 +12,8 @@ reviewed before any client uses them for prices (AD132 ⑤). Upstream's files ar
 | `overrides/vendor-features.toml` | T-0187: what vendors offer besides the model (search endpoints, tools they run), each fact with where it was read (the same file as Frey's `src/frey/configs/vendor-features.toml`) |
 | `facts_report.py`, `test_facts_report.py` | What a sync changes: prices moved by more than 30 %, models removed, new models; the schema |
 | `sync.sh` | The weekly sync, run by `.github/workflows/frey-sync.yml` (or by hand: `git remote add upstream …; git switch -c frey-sync/x; bash frey/sync.sh /tmp/sync`) |
+| `merge_upstream.sh` | T-0189 ③ (B-0025): how `sync.sh` takes upstream — merged here, `.github/workflows/` kept as the fork's, the result one commit onto the sync branch (the workflow's token cannot push commits that touch workflow files); the workflow files not taken go at the end of the report; a conflict elsewhere stops (exit 3) |
+| `upstream-dev` | The upstream commit the last sync took (written by `merge_upstream.sh`): the next sync merges from there |
 
 `dev` is the reviewed branch: the sync opens a pull request into it; a person reads the report and merges.
 `lannerk/agent-catalog` builds `catalog/models-facts.json` from `dev` every week. The skeleton of this
