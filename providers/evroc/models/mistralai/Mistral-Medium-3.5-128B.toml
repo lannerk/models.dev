@@ -1,0 +1,12 @@
+schema = 2
+base_model = "mistral/mistral-medium-2604"
+
+[capabilities]
+reasoning = { supported = true, effort = ["none", "high"] }
+structured_output = true
+
+[cost.text.input]
+price = 1.725
+
+[cost.text.output]
+price = 6.9

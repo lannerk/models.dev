@@ -1,0 +1,25 @@
+# Source: https://nan.builders/docs/models (accessed 2026-09-11)
+# Included in the membership, so no per-token price.
+# NaN reasoning table (checked 2026-10-21): reasoning_effort values none, minimal, low, medium,
+# high, xhigh, max; https://nan.builders/docs/models#controlling-reasoning
+# Update: on by default, none turns it off, minimal..max steer its depth (hints, not caps).
+# Context is now 1M tokens (1,048,576), max answer 131K.
+schema = 2
+base_model = "alibaba/qwen3.8-flash"
+
+[modalities]
+input = ["text", "image/bmp", "image/jpeg", "image/png", "image/tiff", "image/webp", "image/heic"]
+output = ["text"]
+
+[capabilities]
+reasoning = { supported = true, effort = ["none", "minimal", "low", "medium", "high", "xhigh", "max"] }
+structured_output = true
+
+[limit]
+context = 1_048_576
+
+[cost.text.input]
+price = 0
+
+[cost.text.output]
+price = 0

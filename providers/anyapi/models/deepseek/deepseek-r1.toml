@@ -1,0 +1,8 @@
+schema = 2
+base_model = "deepseek/deepseek-reasoner"
+
+[capabilities]
+reasoning = { supported = true }
+
+[api.chat-completions]
+compatibility = { reasoning_field = "reasoning_content" }

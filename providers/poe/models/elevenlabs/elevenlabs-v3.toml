@@ -1,0 +1,9 @@
+schema = 2
+base_model = "elevenlabs/eleven_v3"
+name = "ElevenLabs-v3"
+
+[capabilities]
+tools = { supported = true }
+
+[limit]
+context = 128_000

@@ -1,0 +1,1194 @@
+import path from "node:path";
+import { lstat, mkdir, readdir, rm } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
+import { mergeDeep } from "remeda";
+import { z } from "zod";
+
+import { AuthoredModel, AuthoredModelShape, type Model, type Provider } from "../schema.js";
+import { resolveProtocol } from "../generate-v2.js";
+import {
+  formatModelV2,
+  type InheritedFlags,
+  multiplierModes,
+  patchModelV2,
+  providerModelToV2,
+  resolvedFlags,
+  sameV1Model,
+  withoutModeCosts,
+} from "../model-file-v2.js";
+import { isSchemaV2, labModelV2ToV1, modelV2ToV1, withoutV1ReasoningCost } from "../translate.js";
+import { openMissingModelIssues } from "./missing-issues.js";
+import { MissingReasoningOptionsError } from "./missing-reasoning-options.js";
+import { aiand } from "./providers/aiand.js";
+import { aimlapi } from "./providers/aimlapi.js";
+import { ambient } from "./providers/ambient.js";
+import { anthropic } from "./providers/anthropic.js";
+import { baseten } from "./providers/baseten.js";
+import { chutes } from "./providers/chutes.js";
+import { cloudflareAiGateway } from "./providers/cloudflare-ai-gateway.js";
+import { cloudflareWorkersAi } from "./providers/cloudflare-workers-ai.js";
+import { cortecs } from "./providers/cortecs.js";
+import { crossmodel } from "./providers/crossmodel.js";
+import { deepinfra } from "./providers/deepinfra.js";
+import { digitalocean } from "./providers/digitalocean.js";
+import { edenai } from "./providers/edenai.js";
+import { empiriolabs } from "./providers/empiriolabs.js";
+import { engy } from "./providers/engy.js";
+import { fireworksAi } from "./providers/fireworks-ai.js";
+import { friendli } from "./providers/friendli.js";
+import { githubCopilot } from "./providers/github-copilot.js";
+import { google } from "./providers/google.js";
+import { hyper } from "./providers/hyper.js";
+import { huggingface } from "./providers/huggingface.js";
+import { inceptron } from "./providers/inceptron.js";
+import { kilo } from "./providers/kilo.js";
+import { llmgateway, llmgatewayProviders } from "./providers/llmgateway.js";
+import { mergeGateway } from "./providers/merge-gateway.js";
+import { meta } from "./providers/meta.js";
+import { mistral } from "./providers/mistral.js";
+import { modular } from "./providers/modular.js";
+import { nanoGpt } from "./providers/nano-gpt.js";
+import { nearai } from "./providers/nearai.js";
+import { novitaAi } from "./providers/novita-ai.js";
+import { ollamaCloud } from "./providers/ollama-cloud.js";
+import { openai } from "./providers/openai.js";
+import { ofox } from "./providers/ofox.js";
+import { openrouter } from "./providers/openrouter.js";
+import { ovhcloud } from "./providers/ovhcloud.js";
+import { pioneer } from "./providers/pioneer.js";
+import { prime } from "./providers/prime.js";
+import { requesty } from "./providers/requesty.js";
+import { morph } from "./providers/morph.js";
+import { tinfoil } from "./providers/tinfoil.js";
+import { vercel } from "./providers/vercel.js";
+import { venice } from "./providers/venice.js";
+import { wandb } from "./providers/wandb.js";
+import { xai } from "./providers/xai.js";
+
+const ExistingModelType = AuthoredModelShape.partial()
+  .extend({
+    base_model: z.string().optional(),
+    base_model_omit: z.array(z.string()).optional(),
+  })
+  .strict();
+
+const ExistingModel = AuthoredModelShape.deepPartial()
+  .extend({
+    base_model: z.string().optional(),
+    base_model_omit: z.array(z.string()).optional(),
+  })
+  .strict();
+
+const SyncedBaseModel = AuthoredModelShape.deepPartial()
+  .extend({
+    id: z.string(),
+    base_model: z.string(),
+    base_model_omit: z.array(z.string()).optional(),
+  })
+  .strict();
+
+const SyncedAuthoredModel = z.union([AuthoredModel, SyncedBaseModel]);
+
+export type ExistingModel = z.infer<typeof ExistingModelType>;
+export type SyncedFullModel = Omit<z.infer<typeof AuthoredModelShape>, "id">;
+export type SyncedBaseModel = Omit<z.infer<typeof SyncedBaseModel>, "id">;
+export type SyncedModel = SyncedFullModel | SyncedBaseModel;
+
+export interface SyncProvider<SourceModel> {
+  id: string;
+  name: string;
+  modelsDir: string;
+  /**
+   * Do not create new local TOMLs for remote-only models. Instead open one
+   * deduped GitHub issue per missing model ID.
+   */
+  skipCreates?: boolean;
+  /** Report remote-only models skipped by skipCreates as GitHub issues. */
+  trackMissingModels?: boolean;
+  deleteMissing?: boolean;
+  preserveSymlinks?: boolean;
+  preserveBaseModels?: boolean;
+  preserveDescriptions?: boolean;
+  /** Replace existing leading comments with translateModel.header. */
+  authoritativeHeaders?: boolean;
+  missingNotice?(paths: string[]): string[];
+  /**
+   * Remote ID to report when translateModel skips a source model. Return
+   * undefined to skip silently (no notice, no missing-model issue).
+   */
+  sourceID?(model: SourceModel): string | undefined;
+  /**
+   * Return the ID when a source model skipped by translateModel needs a
+   * missing-model issue. Existing local metadata for that ID is preserved.
+   * Return undefined for intentional skips.
+   */
+  missingModelID?(model: SourceModel): string | undefined;
+  skippedNotice?(ids: string[]): string[];
+  /** Notices about the source list as a whole, such as a model the module expects but the source lacks. */
+  sourceNotices?(models: SourceModel[]): string[];
+  fetchModels(): Promise<unknown>;
+  parseModels(raw: unknown): SourceModel[];
+  translateModel(
+    model: SourceModel,
+    context: {
+      existing(id: string): ExistingModel | undefined;
+      authored(id: string): ExistingModel | undefined;
+      /** The existing file's TOML. */
+      v2?(id: string): Record<string, unknown> | undefined;
+    },
+  ): {
+    id: string;
+    model: SyncedModel;
+    /**
+     * Leading comment block for the written file (e.g. the wire-path header
+     * every toggle reasoning control requires). Existing headers win unless
+     * authoritativeHeaders is enabled.
+     */
+    header?: string;
+    /**
+     * v2 values the source states that v1 fields can't carry (e.g. a price per
+     * cache TTL), keyed by dotted path as in `base_model_omit`. Each replaces
+     * the value at its path in a v2 file after the v1 patch, and a v2 file is
+     * rewritten when one differs even if its v1 view is unchanged. A function
+     * maps the current value to the new one (undefined removes it), for v2 data
+     * that shares a field with v1 data, such as time-of-day price overrides
+     * next to context tiers.
+     */
+    v2Set?: Record<string, unknown>;
+    /** Source data the module skipped, listed with the sync's notices. */
+    notices?: string[];
+  } | SyncedV2Model | undefined;
+}
+
+/**
+ * A model written straight as a v2 file, for data v1 fields can't carry (media
+ * model types, per-unit prices, API protocols). `v2` is the file body, written
+ * as is; existing header comments win over `header`, as for other models.
+ */
+export interface SyncedV2Model {
+  id: string;
+  v2: Record<string, unknown>;
+  header?: string;
+}
+
+export interface SyncResult {
+  id: string;
+  name: string;
+  status: "changed" | "unchanged";
+  created: number;
+  updated: number;
+  deleted: number;
+  unchanged: number;
+  notices: string[];
+  files: Array<{ status: "created" | "updated" | "deleted"; path: string }>;
+}
+
+export const providers: {
+  aiand: SyncProvider<any>;
+  aimlapi: SyncProvider<any>;
+  ambient: SyncProvider<any>;
+  anthropic: SyncProvider<any>;
+  baseten: SyncProvider<any>;
+  chutes: SyncProvider<any>;
+  "cloudflare-ai-gateway": SyncProvider<any>;
+  "cloudflare-workers-ai": SyncProvider<any>;
+  cortecs: SyncProvider<any>;
+  crossmodel: SyncProvider<any>;
+  deepinfra: SyncProvider<any>;
+  digitalocean: SyncProvider<any>;
+  edenai: SyncProvider<any>;
+  empiriolabs: SyncProvider<any>;
+  engy: SyncProvider<any>;
+  "fireworks-ai": SyncProvider<any>;
+  friendli: SyncProvider<any>;
+  "github-copilot": SyncProvider<any>;
+  google: SyncProvider<any>;
+  hyper: SyncProvider<any>;
+  huggingface: SyncProvider<any>;
+  inceptron: SyncProvider<any>;
+  kilo: SyncProvider<any>;
+  llmgateway: SyncProvider<any>;
+  "llmgateway-providers": SyncProvider<any>;
+  "merge-gateway": SyncProvider<any>;
+  meta: SyncProvider<any>;
+  mistral: SyncProvider<any>;
+  modular: SyncProvider<any>;
+  "nano-gpt": SyncProvider<any>;
+  nearai: SyncProvider<any>;
+  "novita-ai": SyncProvider<any>;
+  ofox: SyncProvider<any>;
+  "ollama-cloud": SyncProvider<any>;
+  openai: SyncProvider<any>;
+  openrouter: SyncProvider<any>;
+  ovhcloud: SyncProvider<any>;
+  pioneer: SyncProvider<any>;
+  prime: SyncProvider<any>;
+  requesty: SyncProvider<any>;
+  morph: SyncProvider<any>;
+  tinfoil: SyncProvider<any>;
+  vercel: SyncProvider<any>;
+  venice: SyncProvider<any>;
+  wandb: SyncProvider<any>;
+  xai: SyncProvider<any>;
+} = {
+  aiand,
+  aimlapi,
+  ambient,
+  anthropic,
+  baseten,
+  chutes,
+  "cloudflare-ai-gateway": cloudflareAiGateway,
+  "cloudflare-workers-ai": cloudflareWorkersAi,
+  cortecs,
+  crossmodel,
+  deepinfra,
+  digitalocean,
+  edenai,
+  empiriolabs,
+  engy,
+  "fireworks-ai": fireworksAi,
+  friendli,
+  "github-copilot": githubCopilot,
+  google,
+  hyper,
+  huggingface,
+  inceptron,
+  kilo,
+  llmgateway,
+  "llmgateway-providers": llmgatewayProviders,
+  "merge-gateway": mergeGateway,
+  meta,
+  mistral,
+  modular,
+  "nano-gpt": nanoGpt,
+  nearai,
+  "novita-ai": novitaAi,
+  ofox,
+  "ollama-cloud": ollamaCloud,
+  openai,
+  openrouter,
+  ovhcloud,
+  pioneer,
+  prime,
+  requesty,
+  morph,
+  tinfoil,
+  vercel,
+  venice,
+  wandb,
+  xai,
+};
+
+export const groups = {
+  aggregators: [
+    "aimlapi",
+    "crossmodel",
+    "edenai",
+    "empiriolabs",
+    "huggingface",
+    "inceptron",
+    "kilo",
+    "llmgateway",
+    "llmgateway-providers",
+    "merge-gateway",
+    "nano-gpt",
+    "novita-ai",
+    "ofox",
+    "requesty",
+    "openrouter",
+    "prime",
+    "vercel",
+  ],
+  cloudflare: ["cloudflare-ai-gateway", "cloudflare-workers-ai"],
+  direct: ["aiand", "ambient", "anthropic", "baseten", "chutes", "cortecs", "deepinfra", "digitalocean", "engy", "fireworks-ai", "friendli", "github-copilot", "google", "hyper", "meta", "mistral", "modular", "morph", "nearai", "ollama-cloud", "openai", "ovhcloud", "pioneer", "tinfoil", "venice", "wandb", "xai"],
+} as const;
+
+type ProviderID = keyof typeof providers;
+
+interface SyncOptions {
+  dryRun?: boolean;
+  openIssues?: boolean;
+  newOnly?: boolean;
+}
+
+export async function syncProviderByID(id: ProviderID, options: SyncOptions = {}) {
+  return syncProvider(providers[id], options);
+}
+
+export async function syncProvider<SourceModel>(
+  provider: SyncProvider<SourceModel>,
+  options: SyncOptions = {},
+): Promise<SyncResult> {
+  console.log(`\nSyncing ${provider.name}...`);
+
+  const npm = providerNpm(provider.modelsDir);
+  const existingState = await readExisting(provider.modelsDir, npm);
+  const { models: existing, brokenSymlinks } = existingState;
+  let { modelMetadata } = existingState;
+  const sourceModels = provider.parseModels(await provider.fetchModels());
+  const desired = new Map<string, {
+    model: z.infer<typeof SyncedAuthoredModel>;
+    header: string;
+    v2Set?: Record<string, unknown>;
+  }>();
+  const desiredV2 = new Map<string, { content: string }>();
+  const caseNormalizedDesiredPaths = new Map<string, string>();
+  const skippedRemote: string[] = [];
+  const missingRemote = new Set<string>();
+  const missingReasoning = new Map<string, string>();
+  const translateNotices: string[] = [];
+  for (const notice of provider.sourceNotices?.(sourceModels) ?? []) {
+    translateNotices.push(notice);
+    console.warn(notice);
+  }
+
+  for (const sourceModel of sourceModels) {
+    let translated: ReturnType<typeof provider.translateModel>;
+    try {
+      translated = provider.translateModel(sourceModel, {
+        existing(id) {
+          return existing.get(`${id}.toml`)?.toml;
+        },
+        authored(id) {
+          return existing.get(`${id}.toml`)?.authored;
+        },
+        v2(id) {
+          return existing.get(`${id}.toml`)?.v2;
+        },
+      });
+    } catch (error) {
+      if (!(error instanceof MissingReasoningOptionsError)) throw error;
+      missingReasoning.set(error.modelId, error.message);
+      console.warn(error.message);
+      continue;
+    }
+    if (translated === undefined) {
+      const skippedID = provider.sourceID?.(sourceModel);
+      if (skippedID !== undefined) skippedRemote.push(skippedID);
+      const missingID = provider.missingModelID?.(sourceModel);
+      if (missingID !== undefined) missingRemote.add(missingID);
+      continue;
+    }
+
+    if ("notices" in translated) {
+      for (const notice of translated.notices ?? []) {
+        translateNotices.push(notice);
+        console.warn(notice);
+      }
+    }
+
+    const relativePath = `${translated.id}.toml`;
+    if (provider.skipCreates === true && !existing.has(relativePath)) {
+      skippedRemote.push(translated.id);
+      continue;
+    }
+
+    const collidingPath = caseNormalizedDesiredPaths.get(relativePath.toLowerCase());
+    if (collidingPath !== undefined) {
+      throw new Error(
+        collidingPath === relativePath
+          ? `Duplicate synced model path: ${provider.id}/${relativePath}`
+          : `Synced model paths differ only in case: ${provider.id}/${collidingPath} and ${provider.id}/${relativePath}`,
+      );
+    }
+    caseNormalizedDesiredPaths.set(relativePath.toLowerCase(), relativePath);
+
+    if ("v2" in translated) {
+      // Validates the file the same way readers will translate it.
+      modelV2ToV1({ ...translated.v2, id: translated.id }, { provider: provider.id, path: relativePath }, npm);
+      const translatedHeader = translated.header === undefined ? "" : leadingComments(translated.header);
+      const header = provider.authoritativeHeaders
+        ? translatedHeader
+        : existing.get(relativePath)?.header || translatedHeader;
+      desiredV2.set(relativePath, { content: header + formatModelV2(translated.v2) });
+      continue;
+    }
+
+    const translatedModel = provider.preserveBaseModels === false
+      ? translated.model
+      : preserveBaseModel(translated.model, existing.get(relativePath)?.authored);
+    const translatedBase = "base_model" in translatedModel ? translatedModel.base_model : undefined;
+    let resolvedReasoning: boolean | undefined;
+    let baseReasoningOptions: unknown;
+    if (translatedBase !== undefined) {
+      modelMetadata ??= await readModelMetadata(provider.modelsDir);
+      const canonicalReasoning = modelMetadata[translatedBase]?.reasoning;
+      resolvedReasoning = typeof canonicalReasoning === "boolean" ? canonicalReasoning : undefined;
+      baseReasoningOptions = modelMetadata[translatedBase]?.reasoning_options;
+    } else {
+      resolvedReasoning = existing.get(relativePath)?.toml.reasoning;
+    }
+    const withReasoningOptions = preserveReasoningOptions(
+      translatedModel,
+      existing.get(relativePath)?.authored,
+      resolvedReasoning,
+      baseReasoningOptions,
+    );
+    const withDescription = provider.preserveDescriptions === false
+      ? withReasoningOptions
+      : preserveDescription(withReasoningOptions, existing.get(relativePath)?.authored);
+    const parsed = SyncedAuthoredModel.safeParse(stripUndefined({
+      id: translated.id,
+      ...preserveStructuredOutput(
+        preserveType(withDescription, existing.get(relativePath)?.authored),
+        existing.get(relativePath)?.authored,
+      ),
+    }));
+    if (!parsed.success) {
+      parsed.error.cause = { provider: provider.id, path: relativePath };
+      throw parsed.error;
+    }
+
+    const translatedHeader = translated.header === undefined
+      ? undefined
+      : leadingComments(translated.header);
+    const header = provider.authoritativeHeaders
+      ? translatedHeader ?? ""
+      : (existing.get(relativePath)?.header || translatedHeader) ?? "";
+    desired.set(relativePath, {
+      model: parsed.data,
+      header,
+      v2Set: translated.v2Set,
+    });
+  }
+
+  const files: SyncResult["files"] = [];
+  const v2Notices: string[] = [];
+  let unchanged = 0;
+
+  for (const [relativePath, file] of desired) {
+    const filePath = await safeWritePath(provider.modelsDir, relativePath, true);
+    const current = existing.get(relativePath);
+
+    if (current === undefined) {
+      modelMetadata ??= await readModelMetadata(provider.modelsDir);
+      const model = withBaseModalities(file.model, modelMetadata);
+      const content = v2Content(
+        relativePath,
+        file.header,
+        undefined,
+        undefined,
+        model,
+        v2Notices,
+        await newModelProtocol(provider.modelsDir, file.model),
+        undefined,
+        resolvedFlags(model, baseMetadata(model, modelMetadata)).reasoning,
+        file.v2Set,
+        npm,
+      );
+      if (content === undefined) continue;
+      files.push({ status: "created", path: filePath });
+      if (options.dryRun) {
+        console.log(`Would create ${relativePath}`);
+      } else {
+        await mkdir(path.dirname(filePath), { recursive: true });
+        if (await isSymlink(filePath)) await rm(filePath, { force: true });
+        await Bun.write(filePath, content);
+      }
+      continue;
+    }
+
+    if (current.symlink && provider.preserveSymlinks) {
+      unchanged++;
+      continue;
+    }
+
+    modelMetadata ??= await readModelMetadata(provider.modelsDir);
+    const model = withBaseModalities(file.model, modelMetadata);
+    const headerChanged = provider.authoritativeHeaders && current.header !== file.header;
+    // `reasoning` and `tool_call` compare resolved against the lab, so a switch
+    // between inheriting the lab's value and overriding it is still a change.
+    const resolved = {
+      before: resolvedFlags(current.authored, baseMetadata(current.authored, modelMetadata)),
+      after: resolvedFlags(model, baseMetadata(model, modelMetadata)),
+    };
+    const sameFlags = resolved.before.reasoning === resolved.after.reasoning
+      && resolved.before.tool_call === resolved.after.tool_call;
+    if (!headerChanged && sameFlags && sameV1Model(current.authored, model) && hasV2Values(current.v2, file.v2Set)) {
+      unchanged++;
+      continue;
+    }
+    const content = v2Content(
+      relativePath,
+      provider.authoritativeHeaders ? file.header : current.header,
+      current.v2,
+      current.authored,
+      model,
+      v2Notices,
+      undefined,
+      resolved,
+      resolved.after.reasoning,
+      file.v2Set,
+      npm,
+    );
+    if (content === undefined || options.newOnly) {
+      unchanged++;
+      continue;
+    }
+    files.push({ status: "updated", path: filePath });
+    if (options.dryRun) {
+      console.log(`Would update ${relativePath}`);
+    } else {
+      if (current.symlink) await rm(filePath, { force: true });
+      await Bun.write(filePath, content);
+    }
+  }
+
+  for (const [relativePath, file] of desiredV2) {
+    const filePath = await safeWritePath(provider.modelsDir, relativePath, true);
+    const current = existing.get(relativePath);
+    if (current !== undefined) {
+      if (
+        current.text === file.content
+        || (current.symlink && provider.preserveSymlinks)
+        || options.newOnly
+      ) {
+        unchanged++;
+        continue;
+      }
+    }
+    files.push({ status: current === undefined ? "created" : "updated", path: filePath });
+    if (options.dryRun) {
+      console.log(`Would ${current === undefined ? "create" : "update"} ${relativePath}`);
+    } else {
+      await mkdir(path.dirname(filePath), { recursive: true });
+      if (await isSymlink(filePath)) await rm(filePath, { force: true });
+      await Bun.write(filePath, file.content);
+    }
+  }
+
+  const missingLocal: string[] = [];
+  for (const relativePath of new Set([...existing.keys(), ...brokenSymlinks])) {
+    if (desired.has(relativePath) || desiredV2.has(relativePath)) continue;
+    if (missingRemote.has(relativePath.slice(0, -5))) {
+      unchanged++;
+      continue;
+    }
+    if (missingReasoning.has(relativePath.slice(0, -5))) {
+      unchanged++;
+      continue;
+    }
+    if (provider.deleteMissing === false) {
+      missingLocal.push(relativePath);
+      console.log(`Retaining model missing from source: ${relativePath}`);
+      unchanged++;
+      continue;
+    }
+    if (options.newOnly) {
+      console.log(`Skipping removal in new-only mode: ${relativePath}`);
+      unchanged++;
+      continue;
+    }
+
+    const filePath = await safeWritePath(provider.modelsDir, relativePath, true);
+    files.push({ status: "deleted", path: filePath });
+    if (options.dryRun) {
+      console.log(`Would remove ${relativePath}`);
+    } else {
+      await rm(filePath, { force: true });
+    }
+  }
+
+  const notices = [
+    ...translateNotices,
+    ...v2Notices,
+    ...missingReasoning.values(),
+    ...provider.skippedNotice?.(skippedRemote) ?? [],
+    ...provider.missingNotice?.(missingLocal) ?? [],
+  ];
+
+  const issueModels = [...new Set([
+    ...missingRemote.values(),
+    ...(provider.skipCreates === true ? skippedRemote : []),
+    ...missingReasoning.keys(),
+  ])];
+  if (
+    provider.trackMissingModels !== false
+    && issueModels.length > 0
+    && options.openIssues === true
+  ) {
+    try {
+      notices.push(
+        ...await openMissingModelIssues(
+          { id: provider.id, name: provider.name, modelsDir: provider.modelsDir },
+          issueModels,
+          { dryRun: options.dryRun, reasons: Object.fromEntries(missingReasoning) },
+        ),
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const notice = `Failed to open missing-model GitHub issues: ${message}`;
+      notices.push(notice);
+      console.error(notice);
+      // Surface as a workflow annotation: on no-change hours the notice never
+      // reaches a PR body, so a broken token or full dedupe window would
+      // otherwise disable issue opens silently while runs stay green.
+      if (process.env.GITHUB_ACTIONS === "true") console.log(`::error::${provider.id}: ${notice}`);
+    }
+  }
+
+  const result = summarize(provider, files, unchanged, notices);
+  console.log(
+    `${options.dryRun ? "Dry run: " : ""}${result.created} created, ${result.updated} updated, ${result.deleted} removed, ${result.unchanged} unchanged`,
+  );
+  return result;
+}
+
+// Writes a synced model into a v2 file: a patch of the existing file, or a new
+// one. Returns undefined (and a notice) when the v2 file can't reproduce the
+// synced v1 fields, so the file is left for a manual update.
+function v2Content(
+  relativePath: string,
+  header: string,
+  doc: Record<string, unknown> | undefined,
+  before: ExistingModel | undefined,
+  model: z.infer<typeof SyncedAuthoredModel>,
+  notices: string[],
+  protocol: string | undefined,
+  resolved: { before: InheritedFlags; after: InheritedFlags } | undefined,
+  // The model's resolved `reasoning`, as v1 leaves out a reasoning price without it.
+  reasoning: boolean | undefined,
+  v2Set?: Record<string, unknown>,
+  providerNpm?: string,
+) {
+  const { id, ...synced } = model;
+  try {
+    const carried = doc === undefined || before === undefined
+      ? []
+      : multiplierModes(doc, before, synced);
+    const after = withoutModeCosts(synced, carried);
+    const next = doc === undefined || before === undefined
+      ? providerModelToV2(after, protocol, providerNpm)
+      : patchModelV2(doc, withoutModeCosts(before, carried), after, resolved, providerNpm);
+    for (const [key, value] of Object.entries(v2Set ?? {})) setPath(next, key, value);
+    const content = header + formatModelV2(next);
+    const translated = withoutV1ReasoningCost(
+      modelV2ToV1({ ...(Bun.TOML.parse(content) as Record<string, unknown>), id }, { modelPath: relativePath }, providerNpm),
+      reasoning,
+    );
+    if (sameV1Model(withoutModeCosts(translated, carried), after)) return content;
+    throw new Error("the v2 file does not reproduce the synced fields");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const notice = `Could not write v2 model ${relativePath}: ${message}`;
+    notices.push(notice);
+    console.warn(notice);
+    return undefined;
+  }
+}
+
+// Whether a v2 file already holds every `v2Set` value.
+function hasV2Values(doc: Record<string, unknown>, v2Set: Record<string, unknown> | undefined) {
+  return Object.entries(v2Set ?? {}).every(([key, value]) => {
+    const current = getPath(doc, key);
+    return stable(current) === stable(v2Value(value, current));
+  });
+}
+
+function getPath(doc: Record<string, unknown>, key: string) {
+  return key.split(".").reduce<unknown>(
+    (node, part) => (node !== null && typeof node === "object" ? (node as Record<string, unknown>)[part] : undefined),
+    doc,
+  );
+}
+
+function v2Value(value: unknown, current: unknown) {
+  return typeof value === "function" ? value(structuredClone(current)) : value;
+}
+
+function setPath(doc: Record<string, unknown>, key: string, value: unknown) {
+  const parts = key.split(".");
+  const next = v2Value(value, getPath(doc, key));
+  let node = doc;
+  for (const part of parts.slice(0, -1)) {
+    if (node[part] === null || typeof node[part] !== "object") {
+      if (next === undefined) return;
+      node[part] = {};
+    }
+    node = node[part] as Record<string, unknown>;
+  }
+  if (next === undefined) delete node[parts.at(-1)!];
+  else node[parts.at(-1)!] = next;
+}
+
+// A new v2 file puts `provider` and `interleaved` fields under the model's API
+// protocol, resolved from provider.toml.
+async function newModelProtocol(modelsDir: string, model: z.infer<typeof SyncedAuthoredModel>) {
+  const file = Bun.file(path.join(path.dirname(modelsDir), "provider.toml"));
+  if (!(await file.exists())) return undefined;
+  const provider = {
+    ...(Bun.TOML.parse(await file.text()) as Record<string, unknown>),
+    id: path.basename(path.dirname(modelsDir)),
+  } as unknown as Provider;
+  const shape = "provider" in model ? model.provider?.shape : undefined;
+  const npm = ("provider" in model ? model.provider?.npm : undefined) ?? provider.npm;
+  return resolveProtocol(model as unknown as Model, provider, npm, shape);
+}
+
+function baseMetadata(
+  model: Record<string, unknown>,
+  modelMetadata: Record<string, Record<string, unknown>>,
+) {
+  return typeof model.base_model === "string" ? modelMetadata[model.base_model] : undefined;
+}
+
+// v2 files list both modality sides, but a synced base_model override only lists
+// the side that differs from the lab. The other side is the lab's.
+function withBaseModalities<T extends z.infer<typeof SyncedAuthoredModel>>(
+  model: T,
+  modelMetadata: Record<string, Record<string, unknown>>,
+): T {
+  const modalities = model.modalities as { input?: string[]; output?: string[] } | undefined;
+  if (!("base_model" in model) || typeof model.base_model !== "string") return model;
+  if (modalities === undefined || (modalities.input && modalities.output)) return model;
+  const base = modelMetadata[model.base_model]?.modalities as typeof modalities;
+  return {
+    ...model,
+    modalities: {
+      input: modalities.input ?? base?.input,
+      output: modalities.output ?? base?.output,
+    },
+  };
+}
+
+export function preserveBaseModel(model: SyncedModel, existing: ExistingModel | undefined): SyncedModel {
+  if (existing?.base_model === undefined) return model;
+  const translatedBase = "base_model" in model ? model.base_model : undefined;
+  if (translatedBase !== undefined) {
+    const translatedOmit = "base_model_omit" in model ? model.base_model_omit : undefined;
+    if (translatedBase !== existing.base_model || translatedOmit !== undefined) return model;
+    return { ...model, base_model_omit: existing.base_model_omit };
+  }
+  return {
+    ...model,
+    base_model: existing.base_model,
+    base_model_omit: existing.base_model_omit,
+  };
+}
+
+// Source APIs rarely report a model category, so a curated `type` is kept
+// unless the provider sets one.
+export function preserveType(model: SyncedModel, existing: ExistingModel | undefined): SyncedModel {
+  if (model.type !== undefined || existing?.type === undefined) return model;
+  return { ...model, type: existing.type } as SyncedModel;
+}
+
+// Lab files no longer carry structured_output (it is per host in v2), so a
+// curated host value is kept unless the provider reports one.
+export function preserveStructuredOutput(model: SyncedModel, existing: ExistingModel | undefined): SyncedModel {
+  if (model.structured_output !== undefined || existing?.structured_output === undefined) return model;
+  return { ...model, structured_output: existing.structured_output } as SyncedModel;
+}
+
+export function preserveDescription(model: SyncedModel, existing: ExistingModel | undefined): SyncedModel {
+  if (model.description !== undefined) return model;
+  if (existing?.description === undefined) return model;
+  return { ...model, description: existing.description } as SyncedModel;
+}
+
+export function preserveReasoningOptions(
+  model: SyncedModel,
+  existing: ExistingModel | undefined,
+  resolvedReasoning: boolean | undefined = existing?.reasoning,
+  baseReasoningOptions: unknown = undefined,
+): SyncedModel {
+  if ((model.reasoning ?? resolvedReasoning) === false) {
+    const { reasoning_options: _reasoningOptions, ...withoutReasoningOptions } = model;
+    return withoutReasoningOptions as SyncedModel;
+  }
+  if (model.reasoning_options !== undefined) return model;
+  if (existing?.reasoning_options === undefined) {
+    // When the base model already declares reasoning_options, leave the field
+    // unset so the factored file inherits them — stamping [] here would
+    // shadow the base's real controls with "no controls".
+    return (model.reasoning ?? resolvedReasoning) === true && baseReasoningOptions === undefined
+      ? { ...model, reasoning_options: [] }
+      : model;
+  }
+  return {
+    ...model,
+    reasoning_options: existing.reasoning_options,
+  };
+}
+
+export async function syncTargets(target: string, options: SyncOptions = {}) {
+  const ids = target in groups
+    ? groups[target as keyof typeof groups]
+    : target in providers
+      ? [target as ProviderID]
+      : undefined;
+
+  if (ids === undefined) {
+    throw new Error(`Unknown sync target: ${target}`);
+  }
+
+  const results: SyncResult[] = [];
+  for (const id of ids) {
+    results.push(await syncProviderByID(id as ProviderID, options));
+  }
+  return results;
+}
+
+export function syncProviderMatrix() {
+  return {
+    include: Object.values(providers).map((provider) => ({
+      provider: provider.id,
+      name: provider.name,
+    })),
+  };
+}
+
+// The provider's `npm`, which a model's first API table without its own `aisdk` uses in v1.
+function providerNpm(modelsDir: string) {
+  const file = path.join(path.dirname(modelsDir), "provider.toml");
+  if (!existsSync(file)) return undefined;
+  const npm = (Bun.TOML.parse(readFileSync(file, "utf8")) as Record<string, unknown>).npm;
+  return typeof npm === "string" ? npm : undefined;
+}
+
+async function readExisting(modelsDir: string, npm?: string) {
+  const existing = new Map<string, {
+    authored: ExistingModel;
+    toml: ExistingModel;
+    header: string;
+    text: string;
+    symlink: boolean;
+    v2: Record<string, unknown>;
+  }>();
+  const brokenSymlinks = new Set<string>();
+  let modelMetadata: Record<string, Record<string, unknown>> | undefined;
+
+  for (const { file, symlink } of await tomlFiles(modelsDir)) {
+    const filePath = path.join(modelsDir, file);
+    let text: string;
+    try {
+      text = await Bun.file(filePath).text();
+    } catch (error) {
+      if (symlink && error instanceof Error && "code" in error && error.code === "ENOENT") {
+        brokenSymlinks.add(file);
+        continue;
+      }
+      throw error;
+    }
+    const v2 = Bun.TOML.parse(text) as Record<string, unknown>;
+    if (!isSchemaV2(v2)) throw new Error(`Model file is not schema = 2: ${filePath}`);
+    const { id: _id, ...translated } = modelV2ToV1({ ...v2, id: file.slice(0, -5) }, { modelPath: filePath }, npm);
+    const parsed = ExistingModel.safeParse(translated);
+    if (!parsed.success) {
+      parsed.error.cause = { path: filePath };
+      throw parsed.error;
+    }
+
+    const own = parsed.data as ExistingModel;
+    if (own.base_model !== undefined && modelMetadata === undefined) {
+      modelMetadata = await readModelMetadata(modelsDir);
+    }
+    const resolved = own.base_model === undefined
+      ? own
+      : resolveBaseModel(own, modelMetadata ?? {}, filePath);
+    // As in the v1 output, no reasoning price when the resolved model doesn't reason.
+    const authored = withoutV1ReasoningCost(own, resolved.reasoning);
+    const toml = withoutV1ReasoningCost(resolved);
+
+    existing.set(file, { authored, toml, header: leadingComments(text), text, symlink, v2 });
+  }
+
+  return { models: existing, brokenSymlinks, modelMetadata };
+}
+
+async function isSymlink(filePath: string) {
+  try {
+    return (await lstat(filePath)).isSymbolicLink();
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
+async function safeWritePath(root: string, relativePath: string, allowLeafSymlink = false) {
+  const resolvedRoot = path.resolve(root);
+  const target = path.resolve(resolvedRoot, relativePath);
+  const relative = path.relative(resolvedRoot, target);
+  if (relative === "" || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+    throw new Error(`Refusing to sync path outside ${root}: ${relativePath}`);
+  }
+  if (await isSymlink(resolvedRoot)) {
+    throw new Error(`Refusing to sync through symlink: ${resolvedRoot}`);
+  }
+
+  let current = resolvedRoot;
+  for (const segment of path.relative(resolvedRoot, path.dirname(target)).split(path.sep)) {
+    if (segment === "") continue;
+    current = path.join(current, segment);
+    if (await isSymlink(current)) {
+      throw new Error(`Refusing to sync through symlink: ${current}`);
+    }
+  }
+  if (!allowLeafSymlink && await isSymlink(target)) {
+    throw new Error(`Refusing to sync through symlink: ${target}`);
+  }
+  return target;
+}
+
+async function readModelMetadata(modelsDir: string) {
+  const metadataDir = modelMetadataDir(modelsDir);
+  const result: Record<string, Record<string, unknown>> = {};
+
+  for await (const modelPath of new Bun.Glob("**/*.toml").scan({
+    cwd: metadataDir,
+    absolute: true,
+    followSymlinks: true,
+  })) {
+    const modelID = path.relative(metadataDir, modelPath).split(path.sep).join("/").slice(0, -5);
+    const toml = Bun.TOML.parse(
+      await Bun.file(modelPath).text(),
+    ) as Record<string, unknown>;
+    result[modelID] = inheritableModelMetadata(labModelV2ToV1({ ...toml, id: modelID }, { modelPath }));
+  }
+
+  return result;
+}
+
+function modelMetadataDir(modelsDir: string) {
+  return path.join(path.dirname(path.dirname(path.dirname(modelsDir))), "models");
+}
+
+function resolveBaseModel(
+  authored: ExistingModel,
+  modelMetadata: Record<string, Record<string, unknown>>,
+  modelPath: string,
+) {
+  const baseModelID = authored.base_model;
+  if (baseModelID === undefined) return authored;
+
+  const base = modelMetadata[baseModelID];
+  if (base === undefined) {
+    throw new Error(`Unable to resolve base_model: ${baseModelID}`, {
+      cause: { modelPath, toml: authored },
+    });
+  }
+
+  const merged = structuredClone(
+    mergeDeep(
+      base,
+      Object.fromEntries(
+        Object.entries(authored).filter(([, value]) => value !== undefined),
+      ),
+    ),
+  ) as Record<string, unknown>;
+  applyOmit(merged, authored.base_model_omit ?? []);
+
+  const parsed = ExistingModel.safeParse(merged);
+  if (!parsed.success) {
+    parsed.error.cause = { modelPath, toml: merged };
+    throw parsed.error;
+  }
+  return parsed.data as ExistingModel;
+}
+
+function inheritableModelMetadata(model: Record<string, unknown>) {
+  const {
+    id: _id,
+    benchmarks: _benchmarks,
+    license: _license,
+    links: _links,
+    weights: _weights,
+    ...metadata
+  } = model;
+
+  return Object.fromEntries(
+    Object.entries(metadata).filter(([, value]) => value !== undefined),
+  );
+}
+
+function applyOmit(target: Record<string, unknown>, paths: string[]) {
+  omitLoop: for (const omit of paths) {
+    const parts = omit.split(".");
+    const parents: Array<{ value: Record<string, unknown>; key: string }> = [];
+    let current = target;
+
+    for (const part of parts.slice(0, -1)) {
+      const next = current[part];
+      if (
+        next === undefined ||
+        next === null ||
+        typeof next !== "object" ||
+        Array.isArray(next)
+      ) {
+        continue omitLoop;
+      }
+      parents.push({ value: current, key: part });
+      current = next as Record<string, unknown>;
+    }
+
+    const lastPart = parts.at(-1);
+    if (lastPart === undefined || !(lastPart in current)) continue;
+
+    delete current[lastPart];
+
+    for (let index = parents.length - 1; index >= 0; index--) {
+      const parent = parents[index];
+      if (parent === undefined) continue;
+      const value = parent.value[parent.key];
+      if (
+        value === null ||
+        value === undefined ||
+        typeof value !== "object" ||
+        Array.isArray(value) ||
+        Object.keys(value).length > 0
+      ) {
+        break;
+      }
+      delete parent.value[parent.key];
+    }
+  }
+}
+
+async function tomlFiles(root: string, dir = "") {
+  const result: Array<{ file: string; symlink: boolean }> = [];
+
+  for (const entry of await readdir(path.join(root, dir), { withFileTypes: true })) {
+    const file = path.join(dir, entry.name).split(path.sep).join("/");
+    if (entry.isDirectory()) {
+      result.push(...await tomlFiles(root, file));
+    } else if (entry.name.endsWith(".toml") && (entry.isFile() || entry.isSymbolicLink())) {
+      result.push({ file, symlink: entry.isSymbolicLink() });
+    }
+  }
+
+  return result;
+}
+
+function summarize(
+  provider: { id: string; name: string },
+  files: SyncResult["files"],
+  unchanged: number,
+  notices: string[],
+): SyncResult {
+  return {
+    id: provider.id,
+    name: provider.name,
+    status: files.length > 0 ? "changed" : "unchanged",
+    created: files.filter((file) => file.status === "created").length,
+    updated: files.filter((file) => file.status === "updated").length,
+    deleted: files.filter((file) => file.status === "deleted").length,
+    unchanged,
+    notices,
+    files,
+  };
+}
+
+function stable(value: unknown): string {
+  if (Array.isArray(value)) {
+    const items = value.map(stable);
+    const ordered = value.every((item) => item === null || typeof item !== "object")
+      ? items.sort()
+      : items;
+    return `[${ordered.join(",")}]`;
+  }
+  if (value !== null && typeof value === "object") {
+    return `{${Object.entries(value)
+      .filter(([, item]) => item !== undefined)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, item]) => `${JSON.stringify(key)}:${stable(item)}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map(stripUndefined) as T;
+  }
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([, item]) => item !== undefined)
+        .map(([key, item]) => [key, stripUndefined(item)]),
+    ) as T;
+  }
+  return value;
+}
+
+async function writeReport(target: string, results: SyncResult[]) {
+  await mkdir(".sync", { recursive: true });
+
+  const lines = [
+    `Updates model TOMLs for the \`${target}\` sync target.`,
+    "",
+    "| Provider | Status | Created | Updated | Deleted |",
+    "| --- | --- | ---: | ---: | ---: |",
+  ];
+
+  for (const result of results) {
+    lines.push(
+      `| ${result.name} | ${result.status} | ${result.created} | ${result.updated} | ${result.deleted} |`,
+    );
+  }
+
+  for (const result of results.filter((item) => item.files.length > 0)) {
+    lines.push("", `<details><summary>${result.name} changed files</summary>`, "");
+    for (const file of result.files) {
+      lines.push(`- ${file.status}: \`${file.path}\``);
+    }
+    lines.push("", "</details>");
+  }
+
+  const noticeResults = results.filter((item) => item.notices.length > 0);
+  if (noticeResults.length > 0) {
+    lines.push("", "## Notices");
+    for (const result of noticeResults) {
+      lines.push("", `### ${result.name}`);
+      for (const notice of result.notices) {
+        lines.push(`- ${notice}`);
+      }
+    }
+  }
+
+  lines.push("", "This PR was created automatically by the model sync workflow.");
+  await Bun.write(".sync/model-sync-report.md", `${lines.join("\n")}\n`);
+}
+
+// Preserve the leading comment block (header) authored at the top of a TOML file.
+// `Bun.TOML.parse` discards comments, so the serializer must re-attach them or
+// every rewrite would silently delete hand-authored documentation.
+function leadingComments(text: string) {
+  const header: string[] = [];
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed === "" || trimmed.startsWith("#")) {
+      header.push(line);
+    } else {
+      break;
+    }
+  }
+  while (header.length > 0 && header[header.length - 1]?.trim() === "") header.pop();
+  return header.length > 0 ? `${header.join("\n")}\n` : "";
+}
+
+export async function main(args = process.argv.slice(2)) {
+  if (args.includes("--list-providers")) {
+    console.log(JSON.stringify(syncProviderMatrix()));
+    return;
+  }
+
+  const target = args.find((arg) => !arg.startsWith("-")) ?? "aggregators";
+  const results = await syncTargets(target, {
+    dryRun: args.includes("--dry-run"),
+    newOnly: args.includes("--new-only"),
+    // Only GitHub Actions opens issues by default; local needs --open-issues.
+    openIssues: args.includes("--open-issues")
+      || (process.env.GITHUB_ACTIONS === "true" && !args.includes("--no-issues")),
+  });
+
+  await writeReport(target, results);
+
+  console.log("\nSync summary");
+  for (const result of results) {
+    console.log(
+      `${result.name}: ${result.created} created, ${result.updated} updated, ${result.deleted} deleted`,
+    );
+  }
+}
+
+if (import.meta.main) await main();

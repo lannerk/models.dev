@@ -1,0 +1,17 @@
+schema = 2
+base_model = "moonshotai/kimi-k3"
+name = "Kimi K3 (CanopyWave)"
+
+[capabilities]
+reasoning = { supported = true, effort = ["none", "minimal", "low", "medium", "high", "xhigh", "max"] }
+structured_output = false
+
+[limit]
+output = 1_048_576
+
+[cost.text.input]
+price = 3
+cache = { read = 0.3 }
+
+[cost.text.output]
+price = 15

@@ -1,0 +1,326 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
+import { z } from "zod";
+
+import { describeModel } from "../../describe.js";
+import { inferKimiFamily, ModelFamilyValues } from "../../family.js";
+import type { ExistingModel, SyncProvider, SyncedFullModel, SyncedModel } from "../index.js";
+import { factorBaseModel } from "./openrouter.js";
+
+const API_ENDPOINT = "https://api.venice.ai/api/v1/models?type=text";
+const MODELS_DIR = path.join(import.meta.dirname, "..", "..", "..", "..", "..", "models");
+
+const Capabilities = z.object({
+  supportsAudioInput: z.boolean().optional(),
+  supportsE2EE: z.boolean().optional(),
+  supportsFunctionCalling: z.boolean().optional(),
+  supportsReasoning: z.boolean().optional(),
+  supportsReasoningEffort: z.boolean().optional(),
+  reasoningEffortOptions: z.array(z.string()).optional(),
+  supportsResponseSchema: z.boolean().optional(),
+  supportsVideoInput: z.boolean().optional(),
+  supportsVision: z.boolean().optional(),
+  supportsWebSearch: z.boolean().optional(),
+}).passthrough();
+
+const PricingTier = z.object({
+  usd: z.number().nonnegative(),
+}).passthrough();
+
+const ExtendedPricing = z.object({
+  context_token_threshold: z.number().int().nonnegative(),
+  input: PricingTier,
+  output: PricingTier,
+  cache_input: PricingTier.optional(),
+  cache_write: PricingTier.optional(),
+}).passthrough();
+
+const Pricing = z.object({
+  input: PricingTier,
+  output: PricingTier,
+  cache_input: PricingTier.optional(),
+  cache_write: PricingTier.optional(),
+  extended: ExtendedPricing.optional(),
+}).passthrough();
+
+const Deprecation = z.object({
+  date: z.string(),
+}).passthrough();
+
+const ModelSpec = z.object({
+  pricing: Pricing.optional(),
+  deprecation: Deprecation.nullish(),
+  availableContextTokens: z.number().int().nonnegative(),
+  maxCompletionTokens: z.number().int().nonnegative().optional(),
+  capabilities: Capabilities,
+  name: z.string().min(1),
+  modelSource: z.string().optional(),
+}).passthrough();
+
+export const VeniceModel = z.object({
+  created: z.number(),
+  id: z.string().min(1),
+  model_spec: ModelSpec,
+}).passthrough();
+
+export const VeniceResponse = z.object({
+  data: z.array(VeniceModel),
+}).passthrough();
+
+export type VeniceModel = z.infer<typeof VeniceModel>;
+
+const ReasoningEffortOrder = ["none", "minimal", "low", "medium", "high", "xhigh", "max", "default"] as const;
+type ReasoningEffort = typeof ReasoningEffortOrder[number];
+
+interface MetadataEntry {
+  id: string;
+  filename: string;
+  normalizedFull: string;
+  normalizedFilename: string;
+}
+
+let metadataEntries: MetadataEntry[] | undefined;
+
+const BASE_MODEL_ALIASES: Record<string, string> = {
+  "claude-opus-4-6-fast": "anthropic/claude-opus-4-6",
+  "claude-opus-4-7-fast": "anthropic/claude-opus-4-7",
+  "claude-opus-4-8-fast": "anthropic/claude-opus-4-8",
+  "openai-gpt-56-luna-pro": "openai/gpt-5.6-luna",
+  "openai-gpt-56-sol-pro": "openai/gpt-5.6-sol",
+  "openai-gpt-56-terra-pro": "openai/gpt-5.6-terra",
+};
+
+export const venice = {
+  id: "venice",
+  name: "Venice",
+  modelsDir: "providers/venice/models",
+  preserveBaseModels: false,
+  async fetchModels() {
+    const headers = process.env.VENICE_API_KEY
+      ? { Authorization: `Bearer ${process.env.VENICE_API_KEY}` }
+      : undefined;
+    const response = await fetch(API_ENDPOINT, { headers });
+    if (!response.ok) {
+      throw new Error(`Venice models request failed: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  },
+  parseModels(raw) {
+    return VeniceResponse.parse(raw).data;
+  },
+  translateModel(model, context) {
+    if (model.model_spec.capabilities.supportsE2EE === true) return undefined;
+    const id = model.id.replaceAll("/", "-");
+    const existing = context.existing(id);
+    const existingBase = existing?.base_model?.startsWith("venice/") === false ? existing.base_model : undefined;
+    const resolvedBase = existingBase ?? resolveVeniceBaseModel(model.id, model.model_spec.name);
+    return {
+      id,
+      model: buildVeniceModel(model, existing, resolvedBase ?? null),
+      v2Set: veniceV2Set(model),
+    };
+  },
+} satisfies SyncProvider<VeniceModel>;
+
+// POST /responses serves every Venice text model (OpenAI models natively, the rest translated
+// through Chat Completions), statelessly; E2EE models, which the sync skips, need Chat.
+// https://docs.venice.ai/guides/features/responses-api
+const RESPONSES_API = {
+  base_url: "https://api.venice.ai/api/v1",
+  sdk: { aisdk: "@ai-sdk/openai", opencodeai: "@opencode/ai/providers/openai-compatible/responses" },
+};
+// Web search is $10.00 per 1K requests on models that support it.
+// https://docs.venice.ai/overview/pricing#web-search-and-scraping
+const WEB_SEARCH_PRICE = 10;
+
+export function veniceV2Set(model: VeniceModel): Record<string, unknown> {
+  return {
+    api: withResponsesApi,
+    "cost.web_search": model.model_spec.capabilities.supportsWebSearch === true
+      ? { price: WEB_SEARCH_PRICE }
+      : undefined,
+  };
+}
+
+// The file's API tables with Responses after them. The first table stays as it is (v1 reads it),
+// or is the provider's default Chat Completions API when the file has none. Hand-authored
+// per-API capabilities on Responses are kept.
+export function withResponsesApi(current: unknown) {
+  const tables = current !== null && typeof current === "object" && !Array.isArray(current)
+    ? current as Record<string, unknown>
+    : {};
+  const first = Object.keys(tables)[0] ?? "chat-completions";
+  const own = tables.responses;
+  const capabilities = own !== null && typeof own === "object" && !Array.isArray(own)
+    ? (own as Record<string, unknown>).capabilities
+    : undefined;
+  const responses = structuredClone(RESPONSES_API);
+  return { [first]: tables[first] ?? {}, ...tables, responses: capabilities === undefined ? responses : { ...responses, capabilities } };
+}
+
+export function buildVeniceModel(
+  model: VeniceModel,
+  existing: ExistingModel | undefined,
+  baseModel: string | null | undefined = existing?.base_model ?? resolveVeniceBaseModel(model.id, model.model_spec.name),
+  today = new Date().toISOString().slice(0, 10),
+): SyncedModel {
+  const spec = model.model_spec;
+  const capabilities = spec.capabilities;
+  const input = [
+    "text" as const,
+    ...(capabilities.supportsVision ? ["image" as const] : []),
+    ...(capabilities.supportsAudioInput ? ["audio" as const] : []),
+    ...(capabilities.supportsVideoInput ? ["video" as const] : []),
+    ...(existing?.modalities?.input.includes("pdf") ? ["pdf" as const] : []),
+  ];
+  const limit = {
+    context: spec.availableContextTokens,
+    input: existing?.limit?.input,
+    output: spec.maxCompletionTokens ?? Math.floor(spec.availableContextTokens / 4),
+  };
+  // v2 compares effort lists in order, so they are kept low to high.
+  const reasoningEfforts = capabilities.reasoningEffortOptions?.filter(isReasoningEffort)
+    .sort((a, b) => ReasoningEffortOrder.indexOf(a) - ReasoningEffortOrder.indexOf(b));
+  const reasoningOptions = reasoningEfforts?.length
+    ? [{ type: "effort" as const, values: reasoningEfforts }]
+    : [];
+  const cost = spec.pricing === undefined
+    ? existing?.cost
+    : {
+        input: spec.pricing.input.usd,
+        output: spec.pricing.output.usd,
+        reasoning: existing?.cost?.reasoning,
+        cache_read: spec.pricing.cache_input?.usd,
+        cache_write: spec.pricing.cache_write?.usd,
+        input_audio: existing?.cost?.input_audio,
+        output_audio: existing?.cost?.output_audio,
+        tiers: spec.pricing.extended === undefined
+          ? existing?.cost?.tiers
+          : [{
+              tier: { type: "context" as const, size: spec.pricing.extended.context_token_threshold },
+              input: spec.pricing.extended.input.usd,
+              output: spec.pricing.extended.output.usd,
+              cache_read: spec.pricing.extended.cache_input?.usd,
+              cache_write: spec.pricing.extended.cache_write?.usd,
+            }],
+      };
+  // Venice lists a scheduled removal as model_spec.deprecation.
+  const status = spec.deprecation != null ? "deprecated" as const : existing?.status;
+  const authoritative = {
+    name: spec.name,
+    attachment: input.some((value) => value !== "text"),
+    reasoning: capabilities.supportsReasoning === true,
+    reasoning_options: reasoningOptions,
+    tool_call: capabilities.supportsFunctionCalling === true,
+    structured_output: capabilities.supportsResponseSchema === true ? true : undefined,
+    temperature: undefined,
+    cost,
+    limit,
+    modalities: { input: [...new Set(input)], output: ["text" as const] },
+  };
+  if (baseModel != null) {
+    // Model facts (family, dates, knowledge, open weights) come from the lab
+    // file. A description is kept only when the file already has its own;
+    // factorBaseModel drops it when it equals the lab's.
+    return factorBaseModel(baseModel, {
+      ...authoritative,
+      description: existing?.description,
+      status,
+      interleaved: existing?.interleaved,
+    }, limit, existing?.base_model_omit);
+  }
+
+  const releaseDate = new Date(model.created * 1000).toISOString().slice(0, 10);
+  const family = inferFamily(model.id, spec.name) ?? existing?.family;
+  const openWeights = spec.modelSource?.toLowerCase().includes("huggingface")
+    ?? existing?.open_weights
+    ?? false;
+  return {
+    ...authoritative,
+    description: existing?.description ?? describeModel({
+      id: model.id,
+      name: spec.name,
+      family,
+      reasoning: capabilities.supportsReasoning === true,
+      tool_call: capabilities.supportsFunctionCalling === true,
+      structured_output: capabilities.supportsResponseSchema === true ? true : undefined,
+      open_weights: openWeights,
+      limit,
+      modalities: authoritative.modalities,
+    }),
+    family,
+    release_date: releaseDate,
+    last_updated: existing?.last_updated ?? today,
+    knowledge: existing?.knowledge,
+    open_weights: openWeights,
+    status,
+    interleaved: existing?.interleaved,
+  };
+}
+
+export function resolveVeniceBaseModel(id: string, name: string) {
+  const alias = BASE_MODEL_ALIASES[id];
+  if (alias !== undefined) return alias;
+  const entries = getMetadataEntries();
+  for (const candidate of veniceBaseModelCandidates(id, name)) {
+    const normalized = normalize(candidate);
+    const ranked = [
+      entries.filter((entry) => entry.normalizedFull === normalized),
+      entries.filter((entry) => entry.normalizedFilename === normalized),
+    ];
+    const match = ranked.find((matches) => matches.length === 1)?.[0]?.id;
+    if (match !== undefined) return match;
+  }
+  return undefined;
+}
+
+function veniceBaseModelCandidates(id: string, name: string) {
+  const candidates = [id, name];
+  for (const value of [id, name]) {
+    if (value.toLowerCase().endsWith("-fast")) candidates.push(value.slice(0, -"-fast".length));
+    const withoutFastLabel = value.replace(/\s*\(?\s*fast\s*\)?\s*$/i, "").trim();
+    if (withoutFastLabel !== "" && withoutFastLabel !== value) candidates.push(withoutFastLabel);
+  }
+  return [...new Set(candidates)];
+}
+
+function getMetadataEntries() {
+  if (metadataEntries !== undefined) return metadataEntries;
+  metadataEntries = [];
+  for (const provider of readdirSync(MODELS_DIR, { withFileTypes: true })) {
+    if (!provider.isDirectory()) continue;
+    for (const file of readdirSync(path.join(MODELS_DIR, provider.name), { withFileTypes: true })) {
+      if (!file.isFile() || !file.name.endsWith(".toml")) continue;
+      const filename = file.name.slice(0, -5);
+      metadataEntries.push({
+        id: `${provider.name}/${filename}`,
+        filename,
+        normalizedFull: normalize(`${provider.name}/${filename}`),
+        normalizedFilename: normalize(filename),
+      });
+    }
+  }
+  return metadataEntries;
+}
+
+function normalize(value: string) {
+  return value.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
+}
+
+function isReasoningEffort(value: string): value is ReasoningEffort {
+  return (ReasoningEffortOrder as readonly string[]).includes(value);
+}
+
+function inferFamily(id: string, name: string) {
+  const kimiFamily = inferKimiFamily(id, name);
+  if (kimiFamily !== undefined) return kimiFamily;
+
+  const target = `${id} ${name}`.toLowerCase();
+  return [...ModelFamilyValues]
+    .sort((a, b) => b.length - a.length)
+    .find((family) => {
+      const value = family.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      if (family === "o") return new RegExp(`(^|[^a-z0-9])${value}(?=\\d|$|[^a-z0-9])`).test(target);
+      return new RegExp(`(^|[^a-z0-9])${value}(?=$|[^a-z0-9])`).test(target);
+    });
+}
